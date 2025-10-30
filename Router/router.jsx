@@ -1,13 +1,15 @@
-import {createBrowserRouter} from 'react-router-dom'
+
 import Home  from '../pages/Home'
 import Login from '../pages/Login'
 import Signup from '../pages/Sign'
 // import  NoteFound  from '../pages/notefound'
 import Layaout from '../layaout/layaout'
 import Dashboard from '../DashBoard/dashboard'
+import { createHashRouter } from 'react-router-dom';
+
 // import StudentsPage from '../DashBoard/components/Students'
 
-export const  router = createBrowserRouter([
+export const  router =createHashRouter ([
   {
    element: <Layaout />,
     children : [
