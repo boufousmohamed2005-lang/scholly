@@ -1,0 +1,103 @@
+.stat-card {
+  background: var(--card-color, #ffffff);
+   background-color: var(--card-bg);
+  color: #575555;
+  padding: 22px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  transition: transform .25s ease, box-shadow .25s ease;
+  position: relative;
+
+    border: 1px solid var(--border-color);
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+
+
+.link{
+    display: flex;
+    text-decoration: none;
+    color: rgb(14, 10, 82);
+    background-color: #0400ff;
+    padding: 5px 10px;
+    object-fit: cover;
+    border-radius: 15px;
+    
+}
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+
+.stat-icon-wrapper {
+  
+  width: 48px;
+ 
+  display: grid;
+  place-items: center;
+ 
+  font-size: 1.6rem;
+}
+.stat-icon{
+padding: 6px 7px;
+  font-size: 0.2rem;
+  border-radius:10px ;
+  cursor: pointer;
+  color: #fff;
+ 
+
+}
+.stat-title {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: .9;
+  
+  font-weight: 500;
+}
+.statistique{
+  transform: translateY(40%);
+  display: flex;
+   font-size: 0.61rem;
+   gap: 3px;
+}
+.statistique p{
+  color: rgb(3, 255, 3);
+  font-size: 0.61rem;
+  font-weight: 200;
+}
+.stat-value {
+  font-size: 1.7rem;
+  margin: 4px 0 0;
+  font-weight: 700;
+}
+
+/* Responsive tweak */
+@media (max-width: 600px) {
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    padding: 18px;
+  }
+
+  .stat-value {
+    font-size: 1.4rem;
+  }
+}
+
+/* Dark Mode Compatibility */
+.dark-mode .stat-card {
+  opacity: 0.95;
+  color: #fff;
+}
+.dark-mode .stat-icon-wrapper {
+  background: rgba(255,255,255,0.15);
+}
+.dark-mode .stat-card:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}

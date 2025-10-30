@@ -1,0 +1,76 @@
+/* Reset responsive */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+.page{padding:18px;transition:0.3s;background:#f7f7f7;min-height:100vh;}
+.page.dark{background:#111;color:#eee;}
+h1{font-size:22px;}
+
+.topbar{display:flex;justify-content:space-between;margin-bottom:20px;}
+
+.filters,.export{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+button,select,input{
+  padding:8px 12px;border-radius:6px;border:1px solid #ccc;
+  background:#fff;cursor:pointer;font-size:14px;
+}
+.page.dark button,.page.dark select,.page.dark input{
+  background:#222;border-color:#444;color:#eee;
+}
+.addbtn{background:#0077ff;color:#fff;border:none;}
+
+.input-icon{position:relative;display:flex;align-items:center;}
+.input-icon svg{position:absolute;left:8px;}
+.input-icon input{padding-left:28px;}
+
+.export button{background:#eee;}
+.page.dark .export button{background:#333;}
+
+.table-wrapper{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th,td{padding:10px;text-align:left;border-bottom:1px solid #ddd;}
+.actions button{border:none;background:transparent;}
+.actions .red{color:#d11;}
+
+.drag{cursor:grab;width:20px;}
+
+.empty{text-align:center;padding:20px;font-style:italic;color:#888;}
+
+.pagination{
+  display:flex;gap:10px;justify-content:center;margin-top:12px;
+}
+
+/* Modal */
+.modal-bg{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;
+}
+.modal{
+  background:#fff;padding:20px;border-radius:10px;width:300px;
+  display:flex;flex-direction:column;gap:10px;
+  animation:fadeScale 0.35s;
+}
+.page.dark .modal{background:#222;}
+.modal input{width:100%;}
+.modal-actions{display:flex;justify-content:end;gap:8px;}
+
+/* Animations A: Fade + Scale */
+@keyframes fadeScale{
+  from{opacity:0;transform:scale(0.85);}
+  to{opacity:1;transform:scale(1);}
+}
+
+/* Animation B: Slide smooth on table rows */
+tbody tr{
+  animation:slideFade 0.35s ease-in-out;
+}
+@keyframes slideFade{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* Responsive */
+@media(max-width:600px){
+  th:nth-child(5),td:nth-child(5),
+  th:nth-child(6),td:nth-child(6){
+    display:none;
+  }
+  h1{font-size:18px;}
+}
