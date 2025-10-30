@@ -2,10 +2,10 @@ import {createBrowserRouter} from 'react-router-dom'
 import Home  from '../pages/Home'
 import Login from '../pages/Login'
 import Signup from '../pages/Sign'
-import  NoteFound  from '../pages/notefound'
+// import  NoteFound  from '../pages/notefound'
 import Layaout from '../layaout/layaout'
 import Dashboard from '../DashBoard/dashboard'
-import StudentsPage from '../DashBoard/components/Students'
+// import StudentsPage from '../DashBoard/components/Students'
 
 export const  router = createBrowserRouter([
   {
@@ -32,10 +32,10 @@ export const  router = createBrowserRouter([
   //   path: '/student',
   //   element: <StudentsPage />
   // },
-   {
-    path: '*',
-    element: <NoteFound />
-  }
+  //  {
+  //   path: '*',
+  //   element: <NoteFound />
+  // }
     ]
 
   },
