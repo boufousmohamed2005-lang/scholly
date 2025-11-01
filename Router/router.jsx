@@ -5,11 +5,11 @@ import Signup from '../pages/Sign'
 // import  NoteFound  from '../pages/notefound'
 import Layaout from '../layaout/layaout'
 import Dashboard from '../DashBoard/dashboard'
-import { createHashRouter } from 'react-router-dom';
-
+import {  createBrowserRouter } from 'react-router-dom';
+// import UserList from '../src/components/Users/UserList'
 // import StudentsPage from '../DashBoard/components/Students'
 
-export const  router =createHashRouter ([
+export const  router =createBrowserRouter ([
   {
    element: <Layaout />,
     children : [
@@ -31,8 +31,8 @@ export const  router =createHashRouter ([
     element: <Signup />
   },
   //  {
-  //   path: '/student',
-  //   element: <StudentsPage />
+  //   path: '/usr',
+  //   element: <UserList />
   // },
   //  {
   //   path: '*',

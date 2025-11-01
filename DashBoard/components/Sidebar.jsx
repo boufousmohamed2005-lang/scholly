@@ -19,14 +19,14 @@ import {
 import { Link } from "react-router-dom"
 import "./sidebar.css"
 const navItems = [
-  { name: "Dashboard", icon: <LayoutDashboard size={15}/> },
-  { name: "Étudiants", icon: <GraduationCap size={15}/> },
-  { name: "Professeurs", icon: <Users size={15}/> },
-  { name: "Cours", icon: <BookOpen size={15}/> },
-  { name: "Regions", icon: <MapPin size={15}/> },
-  { name: "Contact", icon: <Contact2 size={15}/> },
-  { name: "Saisie", icon: <Bell size={15}/> },
-   { name: "Paramètres", icon: <Settings size={15}/> },
+  { name: "Dashboard", icon: <LayoutDashboard size={18}/> },
+  { name: "Étudiants", icon: <GraduationCap size={18}/> },
+  { name: "Professeurs", icon: <Users size={18}/> },
+  { name: "Cours", icon: <BookOpen size={18}/> },
+  { name: "Regions", icon: <MapPin size={18}/> },
+  { name: "Contact", icon: <Contact2 size={18}/> },
+  { name: "Saisie", icon: <Bell size={18}/> },
+   { name: "Paramètres", icon: <Settings size={18}/> },
   
 ]
 
@@ -38,7 +38,7 @@ const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode }) => {
     
 
       <aside className={`sidebar ${open ? "open" : ""}`}>
-        <h1 className="title"> <GraduationCap  size={30}  onClick={() => setOpen(!open)}  />  { open && "Schoolly"}  </h1>
+        <h1 className="title"> <GraduationCap  size={39}  onClick={() => setOpen(!open)}  />  { open && "Schoolly"}  </h1>
 
         <nav>
           <ul>
@@ -67,7 +67,7 @@ const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode }) => {
       </nav>
       <br />
         
-        <Link to="/" style={{color:"red"}} > <LogOut  size={15} color="red" strokeWidth={3} />  { open && "Logout" } </Link> 
+        <Link to="/" style={{color:"red"}} > <LogOut  size={18} color="red" strokeWidth={3} />  { open && "Logout" } </Link> 
         
           
         </div>

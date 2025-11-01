@@ -1,261 +1,263 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Plus,
-  Search,
-  FileSpreadsheet,
-  FileDown,
-  GripVertical,
-  Moon,
-  Sun,
+  Trophy,
+  CalendarDays,
   Pencil,
   Trash2,
-  BookOpen,
+  Plus,
+  Search,
+  X,
+ 
 } from "lucide-react";
 import "./teachers.css";
 
-export default function ProfessorsPage() {
-  const [professors, setProfessors] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [form, setForm] = useState({});
+const TeacherPage = ({darkMode}) => {
+  const [teachers, setTeachers] = useState([
+    { id: "TEA001", name: "John Smith", email: "john.smith@school.edu", salary: 3500, experience: 5, department: "Math", subject: "Algebra" },
+    { id: "TEA002", name: "Linda Brown", email: "linda.brown@school.edu", salary: 4000, experience: 8, department: "Science", subject: "Physics" },
+    { id: "TEA003", name: "Mark Taylor", email: "mark.taylor@school.edu", salary: 3200, experience: 3, department: "English", subject: "Literature" },
+  ]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredTeachers, setFilteredTeachers] = useState(teachers);
   const [showModal, setShowModal] = useState(false);
-  const [editId, setEditId] = useState(null);
+  const [editingTeacher, setEditingTeacher] = useState(null);
+  const [newTeacher, setNewTeacher] = useState({
+    id: "", name: "", email: "", salary: "", experience: "", department: "", subject: ""
+  });
 
-  const [subjects, setSubjects] = useState([]);
-  const [regions, setRegions] = useState([]);
 
-  const [search, setSearch] = useState("");
-  const [filterSubject, setFilterSubject] = useState("all");
-  const [filterRegion, setFilterRegion] = useState("all");
-
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(6);
-
-  const [dark, setDark] = useState(
-    () => localStorage.getItem("theme") === "dark"
-  );
-
-  const dragIndex = useRef(null);
-
-  const save = (data) =>
-    localStorage.setItem("professors", JSON.stringify(data));
-
+  // -------------------------------
+  // Dark mode toggle
+  // -------------------------------
   useEffect(() => {
-    const p = JSON.parse(localStorage.getItem("professors") || "[]");
-    const s = JSON.parse(localStorage.getItem("subjects") || "[]");
-    const r = JSON.parse(localStorage.getItem("regions") || "[]");
+    if(darkMode){
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, [darkMode]);
 
-    setProfessors(p);
-    setSubjects(s.map((x) => x.name));
-    setRegions(r.map((x) => x.name));
-  }, []);
-
+  // -------------------------------
+  // Search filter
+  // -------------------------------
   useEffect(() => {
-    let list = [...professors];
-
-    if (search)
-      list = list.filter(
-        (p) =>
-          p.firstName.toLowerCase().includes(search) ||
-          p.lastName.toLowerCase().includes(search) ||
-          p.email.toLowerCase().includes(search)
-      );
-
-    if (filterSubject !== "all")
-      list = list.filter((p) => p.subject === filterSubject);
-
-    if (filterRegion !== "all")
-      list = list.filter((p) => p.region === filterRegion);
-
-    setFiltered(list);
-  }, [search, filterRegion, filterSubject, professors]);
-
-  const openModal = (prof = null) => {
-    setForm(
-      prof || {
-        firstName: "",
-        lastName: "",
-        subject: "",
-        region: "",
-        email: "",
-        phone: "",
-      }
+    const result = teachers.filter((t) =>
+      t.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setEditId(prof?.id || null);
-    setShowModal(true);
+    setFilteredTeachers(result);
+  }, [searchTerm, teachers]);
+
+  // -------------------------------
+  // Delete
+  // -------------------------------
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this teacher?")) {
+      setTeachers(teachers.filter((t) => t.id !== id));
+    }
   };
 
-  const saveForm = () => {
-    let updated;
-    if (editId) {
-      updated = professors.map((p) => (p.id === editId ? form : p));
-    } else {
-      updated = [...professors, { id: Date.now().toString(), ...form }];
+  // -------------------------------
+  // Add or Edit Teacher
+  // -------------------------------
+  const handleSubmitTeacher = (e) => {
+    e.preventDefault();
+    if (!newTeacher.name || !newTeacher.email) {
+      alert("Please fill in all required fields.");
+      return;
     }
-    setProfessors(updated);
-    save(updated);
+
+    if (editingTeacher) {
+      // Editing existing teacher
+      setTeachers(teachers.map(t => t.id === editingTeacher.id ? { ...newTeacher, id: editingTeacher.id, salary: parseFloat(newTeacher.salary), experience: parseInt(newTeacher.experience) } : t));
+    } else {
+      // Adding new teacher
+      const id = "TEA" + String(teachers.length + 1).padStart(3, "0");
+      const teacher = { ...newTeacher, id, salary: parseFloat(newTeacher.salary), experience: parseInt(newTeacher.experience) };
+      setTeachers([...teachers, teacher]);
+    }
+
+    setNewTeacher({ id: "", name: "", email: "", salary: "", experience: "", department: "", subject: "" });
+    setEditingTeacher(null);
     setShowModal(false);
   };
 
-  const del = (id) => {
-    if (!window.confirm("Supprimer ce professeur ?")) return;
-    const updated = professors.filter((p) => p.id !== id);
-    setProfessors(updated);
-    save(updated);
+  // -------------------------------
+  // Edit teacher
+  // -------------------------------
+  const handleEdit = (teacher) => {
+    setEditingTeacher(teacher);
+    setNewTeacher({
+      name: teacher.name,
+      email: teacher.email,
+      salary: teacher.salary,
+      experience: teacher.experience,
+      department: teacher.department,
+      subject: teacher.subject,
+    });
+    setShowModal(true);
   };
 
-  /* Pagination */
-  const totalPages = Math.ceil(filtered.length / pageSize);
-  const current = filtered.slice((page - 1) * pageSize, page * pageSize);
+  // -------------------------------
+  // Stats
+  // -------------------------------
+  const avgSalary = (teachers.reduce((a, t) => a + t.salary, 0) / teachers.length).toFixed(0);
+  const avgExperience = (teachers.reduce((a, t) => a + t.experience, 0) / teachers.length).toFixed(1);
 
-  /* Export CSV */
-  const exportCSV = () => {
-    const rows = [
-      ["Nom", "Prénom", "Matière", "Région", "Email", "Téléphone"],
-      ...filtered.map((p) => [
-        p.lastName,
-        p.firstName,
-        p.subject,
-        p.region,
-        p.email,
-        p.phone,
-      ]),
-    ];
-    const csv = rows.map((r) => r.join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "professeurs.csv";
-    a.click();
-  };
-
-  /* Export PDF = print view */
-  const exportPDF = () => window.print();
-
-  /* Drag & Drop */
-  const dragStart = (index) => (dragIndex.current = index);
-  const dragOver = (e) => e.preventDefault();
-  const drop = (index) => {
-    const copy = [...professors];
-    const [moved] = copy.splice(dragIndex.current, 1);
-    copy.splice(index, 0, moved);
-    setProfessors(copy);
-    save(copy);
-  };
-
+  // -------------------------------
+  // Render
+  // -------------------------------
   return (
-    <div className={dark ? "page dark" : "page"}>
-      <header className="topbar">
-        <h1>Gestion des professeurs</h1>
-        <button onClick={() => setDark((d) => !d)}>
-          {dark ? <Sun /> : <Moon />}
-        </button>
-      </header>
+    <div className="teacher-page">
+      {/* HEADER */}
+      <div className="header">
+        <div>
+          <h1>Teacher Management</h1>
+          <p>Manage teacher records, salary, and experience</p>
+        </div>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <button className="btn-primary" onClick={() => {setShowModal(true); setEditingTeacher(null);}}>
+            <Plus size={18} /> Add Teacher
+          </button>
+        
+        </div>
+      </div>
 
-      <div className="filters">
-        <div className="input-icon">
-          <Search />{" "}
-          <input
-            placeholder="Rechercher..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value.toLowerCase())}
-          />
+      {/* STATS */}
+      <div className="stats-grid">
+        <div className="stat-card blue">
+          <Trophy size={26} />
+          <div>
+            <h3>{teachers.length}</h3>
+            <p>Total Teachers</p>
+          </div>
         </div>
 
-        <select value={filterSubject} onChange={(e) => setFilterSubject(e.target.value)}>
-          <option value="all">Toutes matières</option>
-          {subjects.map((s) => (
-            <option key={s}>{s}</option>
-          ))}
-        </select>
+        <div className="stat-card green">
+          <Trophy size={26} />
+          <div>
+            <h3>${avgSalary}</h3>
+            <p>Average Salary</p>
+          </div>
+        </div>
 
-        <select value={filterRegion} onChange={(e) => setFilterRegion(e.target.value)}>
-          <option value="all">Toutes régions</option>
-          {regions.map((r) => (
-            <option key={r}>{r}</option>
-          ))}
-        </select>
-
-        <button className="addbtn" onClick={() => openModal()}>
-          <Plus /> Ajouter
-        </button>
+        <div className="stat-card purple">
+          <CalendarDays size={26} />
+          <div>
+            <h3>{avgExperience} yrs</h3>
+            <p>Avg Experience</p>
+          </div>
+        </div>
       </div>
 
-      <div className="export">
-        <button onClick={exportCSV}>
-          <FileSpreadsheet /> Excel
-        </button>
-        <button onClick={exportPDF}>
-          <FileDown /> PDF
-        </button>
-      </div>
+      {/* TABLE */}
+      <div className="table-section">
+        <div className="table-header">
+          <div className="search-box">
+            <Search size={16} />
+            <input
+              type="text"
+              placeholder="Search teachers..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
 
-      <div className="table-wrapper">
-        <table className="smooth">
+        <table className="teacher-table">
           <thead>
             <tr>
-              <th></th>
-              <th>Nom</th>
-              <th>Prénom</th>
-              <th>Matière</th>
-              <th>Région</th>
+              <th>ID</th>
+              <th>Name</th>
               <th>Email</th>
-              <th>Téléphone</th>
-              <th></th>
+              <th>Salary</th>
+              <th>Experience</th>
+              <th>Department</th>
+              <th>Subject</th>
+              <th>Actions</th>
             </tr>
           </thead>
-
           <tbody>
-            {current.map((p, i) => (
-              <tr
-                key={p.id}
-                draggable
-                onDragStart={() => dragStart((page - 1) * pageSize + i)}
-                onDragOver={dragOver}
-                onDrop={() => drop((page - 1) * pageSize + i)}
-              >
-                <td className="drag"><GripVertical /></td>
-                <td>{p.lastName}</td>
-                <td>{p.firstName}</td>
-                <td>{p.subject}</td>
-                <td>{p.region}</td>
-                <td>{p.email}</td>
-                <td>{p.phone}</td>
+            {filteredTeachers.map((t) => (
+              <tr key={t.id}>
+                <td>{t.id}</td>
+                <td>{t.name}</td>
+                <td>{t.email}</td>
+                <td>${t.salary}</td>
+                <td>{t.experience} yrs</td>
+                <td>{t.department}</td>
+                <td>{t.subject}</td>
                 <td className="actions">
-                  <button onClick={() => openModal(p)}><Pencil size={15} /></button>
-                  <button onClick={() => del(p.id)} className="red"><Trash2 size={20} /></button>
+                  <button className="icon-btn edit" onClick={() => handleEdit(t)}>
+                    <Pencil size={16} />
+                  </button>
+                  <button className="icon-btn delete" onClick={() => handleDelete(t.id)}>
+                    <Trash2 size={16} />
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {filtered.length === 0 && <div className="empty">Aucun professeur 🤷‍♂️</div>}
       </div>
 
-      <div className="pagination">
-        <button disabled={page <= 1} onClick={() => setPage(page - 1)}>←</button>
-        <span>{page}/{totalPages || 1}</span>
-        <button disabled={page >= totalPages} onClick={() => setPage(page + 1)}>→</button>
-      </div>
-
+      {/* MODAL */}
       {showModal && (
-        <div className="modal-bg" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>{editId ? "Modifier" : "Ajouter"}</h2>
-
-            {["lastName","firstName","subject","region","email","phone"].map((f)=>(
-              <input key={f} placeholder={f}
-                value={form[f]||""}
-                onChange={(e)=> setForm({...form,[f]:e.target.value})}/>
-            ))}
-
-            <div className="modal-actions">
-              <button onClick={() => setShowModal(false)}>Annuler</button>
-              <button onClick={saveForm}>OK</button>
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h3>{editingTeacher ? "Edit Teacher" : "Add New Teacher"}</h3>
+              <button onClick={() => setShowModal(false)} className="close-btn">
+                <X size={18} />
+              </button>
             </div>
+
+            <form className="modal-form" onSubmit={handleSubmitTeacher}>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={newTeacher.name}
+                onChange={(e) => setNewTeacher({ ...newTeacher, name: e.target.value })}
+                required
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={newTeacher.email}
+                onChange={(e) => setNewTeacher({ ...newTeacher, email: e.target.value })}
+                required
+              />
+              <input
+                type="number"
+                placeholder="Salary"
+                value={newTeacher.salary}
+                onChange={(e) => setNewTeacher({ ...newTeacher, salary: e.target.value })}
+              />
+              <input
+                type="number"
+                placeholder="Experience (yrs)"
+                value={newTeacher.experience}
+                onChange={(e) => setNewTeacher({ ...newTeacher, experience: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Department"
+                value={newTeacher.department}
+                onChange={(e) => setNewTeacher({ ...newTeacher, department: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Subject"
+                value={newTeacher.subject}
+                onChange={(e) => setNewTeacher({ ...newTeacher, subject: e.target.value })}
+              />
+              <button type="submit" className="btn-primary full">{editingTeacher ? "Save Changes" : "Add Teacher"}</button>
+            </form>
           </div>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default TeacherPage;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, School, Sun, Moon, Droplet, ChevronDown } from "lucide-react";
 import "./courses.css";
 
-const themes = ["clair", "dark", "coloré"];
+
 const defaultSubjects = [
   { id: "1", code: "MATH101", name: "Mathématiques", description: "Cours de maths de base" },
   { id: "2", code: "PHYS101", name: "Physique", description: "Cours de physique" },
@@ -20,7 +20,7 @@ export default function SubjectsPage({ initialTheme = "clair" }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
-
+setTheme(0)
   useEffect(() => {
     loadData();
   }, []);
@@ -83,20 +83,6 @@ export default function SubjectsPage({ initialTheme = "clair" }) {
     }
   };
 
-  const toggleTheme = () => {
-    const currentIndex = themes.indexOf(theme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    setTheme(themes[nextIndex]);
-  };
-
-  const getThemeIcon = () => {
-    switch (theme) {
-      case "clair": return <Sun size={16} />;
-      case "dark": return <Moon size={16} />;
-      case "coloré": return <Droplet size={16} />;
-      default: return <Sun size={16} />;
-    }
-  };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -136,9 +122,7 @@ export default function SubjectsPage({ initialTheme = "clair" }) {
           <p>Gérez toutes les matières enseignées</p>
         </div>
         <div className="header-actions">
-          <button className="btn-theme" onClick={toggleTheme}>
-            {getThemeIcon()} {theme.charAt(0).toUpperCase() + theme.slice(1)}
-          </button>
+        
           <button className="btn-primary" onClick={() => handleOpenDialog()}>
             <Plus size={16} /> Ajouter une matière
           </button>

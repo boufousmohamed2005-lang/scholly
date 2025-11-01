@@ -163,7 +163,7 @@ const Dashboard = () => {
                     )}
 
                     {activeItem === "Étudiants" && <Students setetu={setetu} />}
-                    {activeItem === "Professeurs" && <Teachers />}
+                    {activeItem === "Professeurs" && <Teachers darkMode={darkMode}  />}
                     {activeItem === "Cours" && <Courses />}
                     {activeItem === "Regions" && <Regions />}
                     {activeItem === "payments" && <Payments />}
