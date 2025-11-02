@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, School, Sun, Moon, Droplet, ChevronDown } from "lucide-react";
+import { Plus, Pencil, Trash2, School, ChevronDown } from "lucide-react";
 import "./courses.css";
-
 
 const defaultSubjects = [
   { id: "1", code: "MATH101", name: "Mathématiques", description: "Cours de maths de base" },
@@ -9,39 +8,25 @@ const defaultSubjects = [
   { id: "3", code: "CHEM101", name: "Chimie", description: "Cours de chimie" },
 ];
 
-export default function SubjectsPage({ initialTheme = "clair" }) {
+export default function CoursesPage() {
   const [subjects, setSubjects] = useState([]);
   const [filteredSubjects, setFilteredSubjects] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const [formData, setFormData] = useState({ name: "", code: "", description: "" });
-  const [professorCounts, setProfessorCounts] = useState({});
-  const [theme, setTheme] = useState(initialTheme);
+ 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
-setTheme(0)
+
   useEffect(() => {
-    loadData();
+    const storedSubjects = JSON.parse(localStorage.getItem("subjects") || "[]");
+    setSubjects(storedSubjects.length ? storedSubjects : defaultSubjects);
   }, []);
 
   useEffect(() => {
     handleSearch(searchQuery);
-  });
-
-  const loadData = () => {
-    let subjectsData = JSON.parse(localStorage.getItem("subjects") || "[]");
-    if (subjectsData.length === 0) subjectsData = defaultSubjects;
-
-    let professorsData = JSON.parse(localStorage.getItem("professors") || "[]");
-    setSubjects(subjectsData);
-
-    const counts = {};
-    subjectsData.forEach((subject) => {
-      counts[subject.name] = professorsData.filter((p) => p.subject === subject.name).length;
-    });
-    setProfessorCounts(counts);
-  };
+  }, );
 
   const handleOpenDialog = (subject) => {
     if (subject) {
@@ -61,16 +46,12 @@ setTheme(0)
       updatedSubjects = subjects.map((s) =>
         s.id === editingSubject.id ? { ...editingSubject, ...formData } : s
       );
-      alert("Matière modifiée !");
     } else {
-      const newSubject = { id: Date.now().toString(), ...formData };
-      updatedSubjects = [...subjects, newSubject];
-      alert("Nouvelle matière ajoutée !");
+      updatedSubjects = [...subjects, { id: Date.now().toString(), ...formData }];
     }
     setSubjects(updatedSubjects);
     localStorage.setItem("subjects", JSON.stringify(updatedSubjects));
     setIsDialogOpen(false);
-    loadData();
   };
 
   const handleDelete = (id) => {
@@ -78,11 +59,8 @@ setTheme(0)
       const updatedSubjects = subjects.filter((s) => s.id !== id);
       setSubjects(updatedSubjects);
       localStorage.setItem("subjects", JSON.stringify(updatedSubjects));
-      alert("Matière supprimée !");
-      loadData();
     }
   };
-
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -98,42 +76,70 @@ setTheme(0)
     const asc = sortField === field ? !sortAsc : true;
     setSortField(field);
     setSortAsc(asc);
-    const sorted = [...(filteredSubjects.length ? filteredSubjects : subjects)].sort((a, b) => {
-      if (field === "professors") {
-        return asc
-          ? (professorCounts[a.name] || 0) - (professorCounts[b.name] || 0)
-          : (professorCounts[b.name] || 0) - (professorCounts[a.name] || 0);
-      } else {
-        return asc
-          ? a[field].localeCompare(b[field])
-          : b[field].localeCompare(a[field]);
-      }
-    });
+    const sorted = [...(filteredSubjects.length ? filteredSubjects : subjects)].sort((a, b) =>
+      asc ? a[field].localeCompare(b[field]) : b[field].localeCompare(a[field])
+    );
     setFilteredSubjects(sorted);
   };
 
   const displayedSubjects = filteredSubjects.length ? filteredSubjects : subjects;
 
+  // Statistiques
+  const totalCourses = subjects.length;
+  const totalEnrollment = subjects.length * 10; // Exemple simple
+  const avgCapacity = subjects.length ? Math.floor((totalEnrollment / (subjects.length * 10)) * 100) : 0;
+  const fullCourses = subjects.length ? 1 : 0; // Exemple simple
+
   return (
-    <div className={`subjects-page theme-${theme}`}>
+    <div className={`courses-page theme`}>
       <div className="header">
         <div>
           <h1>Gestion des matières</h1>
           <p>Gérez toutes les matières enseignées</p>
         </div>
         <div className="header-actions">
-        
           <button className="btn-primary" onClick={() => handleOpenDialog()}>
             <Plus size={16} /> Ajouter une matière
           </button>
         </div>
       </div>
 
+      {/* Dashboard Statistiques */}
+      <div className="dashboard">
+        <div className="card-stats">
+          <h3>Total Courses</h3>
+          <p>{totalCourses}</p>
+          <div className="progress-bar">
+            <div className="progress-fill progress-success" style={{ width: "100%" }}></div>
+          </div>
+        </div>
+        <div className="card-stats">
+          <h3>Total Enrollment</h3>
+          <p>{totalEnrollment}</p>
+          <div className="progress-bar">
+            <div className="progress-fill progress-success" style={{ width: "75%" }}></div>
+          </div>
+        </div>
+        <div className="card-stats">
+          <h3>Avg Capacity</h3>
+          <p>{avgCapacity}%</p>
+          <div className="progress-bar">
+            <div className="progress-fill progress-warning" style={{ width: `${avgCapacity}%` }}></div>
+          </div>
+        </div>
+        <div className="card-stats">
+          <h3>Full Courses</h3>
+          <p>{fullCourses}</p>
+          <div className="progress-bar">
+            <div className="progress-fill progress-danger" style={{ width: "10%" }}></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
       <div className="card">
         <div className="card-header">
-          <h2>
-            <School size={20} /> Liste des matières ({displayedSubjects.length})
-          </h2>
+          <h2><School size={20} /> Liste des matières ({displayedSubjects.length})</h2>
         </div>
         <div className="card-content">
           <input
@@ -149,9 +155,6 @@ setTheme(0)
                 <th onClick={() => handleSort("code")}>Code <ChevronDown size={12} /></th>
                 <th onClick={() => handleSort("name")}>Nom <ChevronDown size={12} /></th>
                 <th>Description</th>
-                <th className="text-center" onClick={() => handleSort("professors")}>
-                  Professeurs <ChevronDown size={12} />
-                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -162,22 +165,15 @@ setTheme(0)
                     <td>{subject.code}</td>
                     <td>{subject.name}</td>
                     <td>{subject.description}</td>
-                    <td className="text-center">{professorCounts[subject.name] || 0}</td>
-                    <td className="text-right">
-                      <button className="btn-ghost" onClick={() => handleOpenDialog(subject)}>
-                        <Pencil size={16} />
-                      </button>
-                      <button className="btn-ghost btn-destructive" onClick={() => handleDelete(subject.id)}>
-                        <Trash2 size={16} />
-                      </button>
+                    <td>
+                      <button className="btn-icon edit" onClick={() => handleOpenDialog(subject)}><Pencil size={16} /></button>
+                      <button className="btn-icon delete" onClick={() => handleDelete(subject.id)}><Trash2 size={16} /></button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="text-center">
-                    Aucune matière trouvée
-                  </td>
+                  <td colSpan={4} className="text-center">Aucune matière trouvée</td>
                 </tr>
               )}
             </tbody>
@@ -185,49 +181,36 @@ setTheme(0)
         </div>
       </div>
 
+      {/* Modal */}
       {isDialogOpen && (
-        <div className="dialog-backdrop">
-          <div className="dialog">
+        <div className="modal-overlay">
+          <div className="modal">
             <h3>{editingSubject ? "Modifier la matière" : "Ajouter une matière"}</h3>
-            <p>{editingSubject ? "Modifiez les informations de la matière" : "Remplissez les informations de la nouvelle matière"}</p>
             <form onSubmit={handleSubmit}>
-              <label>
-                Code de la matière
-                <input
-                  type="text"
-                  value={formData.code}
-                  onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  placeholder="ex: MATH101"
-                  required
-                />
-              </label>
-              <label>
-                Nom de la matière
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="ex: Mathématiques"
-                  required
-                />
-              </label>
-              <label>
-                Description
-                <input
-                  type="text"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Description de la matière"
-                  required
-                />
-              </label>
-              <div className="dialog-actions">
-                <button type="button" className="btn-outline" onClick={() => setIsDialogOpen(false)}>
-                  Annuler
-                </button>
-                <button type="submit" className="btn-primary">
-                  {editingSubject ? "Modifier" : "Ajouter"}
-                </button>
+              <input
+                type="text"
+                placeholder="Code de la matière"
+                value={formData.code}
+                onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Nom de la matière"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                required
+              />
+              <div className="modal-actions">
+                <button type="button" className="btn-outline" onClick={() => setIsDialogOpen(false)}>Annuler</button>
+                <button type="submit" className="btn-primary">{editingSubject ? "Modifier" : "Ajouter"}</button>
               </div>
             </form>
           </div>

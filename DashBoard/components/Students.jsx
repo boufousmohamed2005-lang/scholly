@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import "./students.css";
 
-const StudentPage = () => {
+const StudentPage = ({setetu}) => {
   // -------------------------------
   // 🔹 État des étudiants
   // -------------------------------
@@ -40,6 +40,8 @@ const StudentPage = () => {
     attendance: "",
   });
 
+
+  setetu(students.length);
   // -------------------------------
   // 🔹 Recherche automatique
   // -------------------------------

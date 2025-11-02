@@ -1,104 +1,171 @@
+:root {
+  /* --- Light theme --- */
+  --light-bg: #ffffff;
+  --light-card: #f8fafc;
+  --light-text: #111827;
+  --light-border: #e5e7eb;
+
+  /* --- Dark theme --- */
+  --dark-bg: #0f172a;
+  --dark-card: #1e293b;
+  --dark-text: #f1f5f9;
+  --dark-border: #334155;
+}
+
+/* ----------------------- */
+/* Base style for the card */
+/* ----------------------- */
 .stat-card {
-  background: var(--card-color, #ffffff);
-   background-color: var(--card-bg);
-  color: #575555;
-  padding: 22px;
-  border-radius: 18px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  transition: transform .25s ease, box-shadow .25s ease;
-  position: relative;
-
-    border: 1px solid var(--border-color);
-  overflow: hidden;
   justify-content: space-between;
-}
-
-
-
-.link{
-    display: flex;
-    text-decoration: none;
-    color: rgb(14, 10, 82);
-    background-color: #0400ff;
-    padding: 5px 10px;
-    object-fit: cover;
-    border-radius: 15px;
-    
-}
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-}
-
-.stat-icon-wrapper {
-  
-  width: 48px;
- 
-  display: grid;
-  place-items: center;
- 
-  font-size: 1.6rem;
-}
-.stat-icon{
-padding: 6px 7px;
-  font-size: 0.2rem;
-  border-radius:10px ;
+  background: var(--light-card);
+  color: var(--light-text);
+  border-radius: 16px;
+  padding: 1.4rem 1.6rem;
+  border: 1px solid var(--light-border);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
   cursor: pointer;
-  color: #fff;
- 
+  transition: all 0.35s ease;
+  overflow: hidden;
+  position: relative;
+  animation: fadeIn 0.6s ease forwards;
+}
 
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px -8px var(--card-color);
 }
-.stat-title {
-  margin: 0;
-  font-size: 0.8rem;
-  opacity: .9;
-  
-  font-weight: 500;
+
+/* ----------------------- */
+/* Dark mode styles */
+/* ----------------------- */
+body.dark-mode .stat-card {
+  background-color: var(--dark-card);
+  color: var(--dark-text);
+  border: 1px solid var(--dark-border);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.06);
 }
-.statistique{
-  transform: translateY(40%);
+
+body.dark-mode .stat-card:hover {
+  box-shadow: 0 0 25px -6px var(--card-color);
+}
+
+/* ----------------------- */
+/* Icon styling */
+/* ----------------------- */
+.stat-icon {
   display: flex;
-   font-size: 0.61rem;
-   gap: 3px;
-}
-.statistique p{
-  color: rgb(3, 255, 3);
-  font-size: 0.61rem;
-  
-  font-weight: 200;
-}
-.stat-value {
-  font-size: 1.7rem;
-  margin: 4px 0 0;
-  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px var(--card-color);
+  transition: all 0.3s ease;
 }
 
-/* Responsive tweak */
-@media (max-width: 600px) {
+.stat-card:hover .stat-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px var(--card-color);
+}
+
+/* ----------------------- */
+/* Info section */
+/* ----------------------- */
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.stat-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 0.85;
+  text-transform: capitalize;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ----------------------- */
+/* Trend / Statistique */
+/* ----------------------- */
+.statistique {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+  opacity: 0.9;
+}
+
+.statistique p {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: rgb(3, 255, 3);
+  font-weight: 600;
+}
+
+.statistique span {
+  color: gray;
+}
+
+/* ----------------------- */
+/* Animation */
+/* ----------------------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ----------------------- */
+/* Responsive Design */
+/* ----------------------- */
+@media (max-width: 768px) {
   .stat-card {
-    flex-direction: column;
-    text-align: center;
-    gap: 10px;
-    padding: 18px;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    padding: 1rem 1.2rem;
+    gap: 0.8rem;
+  }
+
+  .stat-value {
+    font-size: 1.6rem;
+  }
+
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-title {
+    font-size: 0.85rem;
   }
 
   .stat-value {
     font-size: 1.4rem;
   }
-}
 
-/* Dark Mode Compatibility */
-.dark-mode .stat-card {
-  opacity: 0.95;
-  color: #fff;
-}
-.dark-mode .stat-icon-wrapper {
-  background: rgba(255,255,255,0.15);
-}
-.dark-mode .stat-card:hover {
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  .statistique {
+    font-size: 0.8rem;
+  }
 }

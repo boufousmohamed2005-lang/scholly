@@ -32,7 +32,7 @@ import {
 const Dashboard = () => {
     const [activeItem, setActiveItem] = useState("Dashboard");
     // const [searchQuery, setSearchQuery] = useState('');
-    const [etu, setetu] = useState();
+    const [etu, setetu] = useState(0);
 
     console.log("Number of students:", etu);
     // Hardcoded data

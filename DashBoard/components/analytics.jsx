@@ -18,7 +18,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import "./activity.css";
+import "./analytics.css";
 
 export default function Analytics({children,lineData,barData}) {
 
