@@ -1,0 +1,308 @@
+/* -------------------------------
+   VARIABLES
+---------------------------------*/
+:root {
+  --primary: #4f46e5;
+  --secondary: #10b981;
+  --danger: #ef4444;
+  --yellow: #facc15;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --bg-light: #f9f9fb;
+  --bg-dark: #1f2937;
+  --text-light: #111827;
+  --text-dark: #f3f4f6;
+  --modal-bg: rgba(0, 0, 0, 0.6);
+  --card-bg-light: #fff;
+  --card-bg-dark: #374151;
+}
+
+/* -------------------------------
+   GLOBAL
+---------------------------------*/
+/* body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-light);
+  margin: 0;
+  transition: all 0.3s ease;
+} */
+
+body.dark-mode {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+/* -------------------------------
+   HEADER
+---------------------------------*/
+.teacher-page .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  flex-wrap: wrap;
+  height: max-content;
+}
+
+.teacher-page .header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.teacher-page .header p {
+  margin: 0.2rem 0 0 0;
+  color: #6b7280;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #4338ca;
+}
+
+/* -------------------------------
+   STATS
+---------------------------------*/
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1rem 2rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--card-bg-light);
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+body.dark-mode .stat-card {
+  background-color: var(--card-bg-dark);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.stat-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.stat-card.blue { color: var(--blue); }
+.stat-card.green { color: var(--secondary); }
+.stat-card.purple { color: var(--purple); }
+.stat-card.orange { color: var(--yellow); }
+
+/* -------------------------------
+   TABLE
+---------------------------------*/
+.table-section {
+  padding: 1rem 2rem;
+  overflow-x: auto;
+}
+
+.table-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--card-bg-light);
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+ 
+}
+
+body.dark-mode .search-box {
+  background-color: var(--card-bg-dark);
+}
+
+.teacher-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.teacher-table th,
+.teacher-table td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+}
+
+.teacher-table th {
+  background-color: var(--card-bg-light);
+  font-weight: 600;
+  color: #6b7280;
+}
+
+body.dark-mode .teacher-table th {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.teacher-table tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode .teacher-table tr {
+  border-bottom: 1px solid #4b5563;
+}
+
+.teacher-table tr:hover {
+  background-color: rgba(79, 70, 229, 0.05);
+}
+
+.badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge.green { background-color: #10b981; color: #fff; }
+.badge.yellow { background-color: #facc15; color: #111827; }
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  background-color: #e5e7eb;
+  padding: 0.3rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.icon-btn.edit { background-color: #3b82f6; color: #fff; }
+.icon-btn.delete { background-color: #ef4444; color: #fff; }
+
+.icon-btn:hover {
+  transform: scale(1.1);
+}
+
+/* -------------------------------
+   MODAL
+---------------------------------*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal {
+  background-color: var(--card-bg-light);
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  animation: slideUp 0.3s ease;
+}
+
+body.dark-mode .modal {
+  background-color: var(--card-bg-dark);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.close-btn {
+  background-color: transparent;
+  color: #6b7280;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-form input {
+  border: 1px solid #d1d5db;
+}
+
+.modal-form button.full {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* -------------------------------
+   ANIMATIONS
+---------------------------------*/
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes slideUp {
+  from {transform: translateY(20px); opacity: 0;}
+  to {transform: translateY(0); opacity: 1;}
+}

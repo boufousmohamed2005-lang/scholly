@@ -1,0 +1,234 @@
+/* Structure */
+.parent-sidebar{
+ text-align: center;
+  top: 0;
+  left: 0; 
+   gap:20px;
+   bottom: 0;
+  width: fit-content;
+}
+.sidebar {
+   top: 0;
+  left: 0; 
+   bottom: 0;
+  position: sticky; 
+
+  height: max-content;
+  
+  color: #1b1919;
+  padding:10px 20px;
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+  transform: translateX(0);
+  transition: transform 0.35s ease;
+  /* box-shadow: 3px 0 8px rgba(0,0,0,0.15); */
+  border-right: 1px solid var(--border-color);
+  z-index: 1000;
+}
+
+.title {
+    padding: 10px 0;
+   font-size: 2rem; 
+   font-weight: 700; 
+  color: var(--accent-color);
+  display: flex;
+    align-items: center;
+    gap: 10px;
+    /* padding-bottom: 20px;  */
+  border-bottom:2px solid var(--border-color);  
+    
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 3px solid var(--border-color);
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 12px;
+  width: 100%;
+  border-radius: 10px;
+  transition: 0.3s;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.sidebar-item.active,
+.sidebar-item:hover {
+  background: #bccdf8;
+  color: #3700ff;
+}
+
+/* Box help section */
+.help-box {
+  margin-top: auto;
+  background: rgba(255,255,255,0.07);
+  padding: 1px;
+color: #121212;
+ align-items: center;
+ align-self: center;
+width: 100%;
+  left: 0;
+  bottom: 0;
+position: sticky;
+  border-radius: 10px;
+
+
+  
+  
+}
+
+.help-box >* {
+
+   display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+    left: 0;
+  bottom: 0;
+position: sticky;
+  padding: 1px;
+  width: 100%;
+  border-radius: 10px;
+  transition: 0.3s;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* HAMBURGER */
+.hamburger {
+  display: block;
+
+  background: transparent;
+  border: none;
+  color: #9155FD;
+  z-index: 1100;
+}
+ /* .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    /* transform: translateX(0); 
+  
+  } */
+
+/* RESPONSIVE */
+@media (max-width: 860px) {
+  .sidebar {
+    transform: none;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .hamburger {
+    display: block;
+  }
+}
+/* Dark Mode */
+.dark .sidebar {
+    background: #121212;
+    color: #e0e0e0;
+    }
+.dark .sidebar-item.active,
+.dark .sidebar-item:hover {
+    background: #7300ff;
+    color: #121212;
+
+    }
+/* .dark .help-box {
+    background: rgba(224,224,224,0.07);
+    }
+.dark .help-box button {
+    background: #bb86fc;
+    color: #121212;
+    } */
+/*
+--------------------------- */
+/* Variables */
+:root {
+    --bg-color: #f5f5f5;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --border-color: #e0e0e0;
+    --accent-color: #3b82f6;
+    --hover-color: #e0e7ff;
+    --shadow: rgba(0, 0, 0, 0.1);
+    }
+.dark {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --border-color: #333333;
+    --accent-color: #bb86fc;
+    --hover-color: #333333;
+    --shadow: rgba(0, 0, 0, 0.5);
+    }
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    }
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s, border-color 0.3s,
+
+    box-shadow 0.3s;
+    }
+.button {
+    background-color: var(--accent-color);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    }   
+.button:hover {
+    background-color: var(--hover-color);
+    }
+.input {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    }
+.input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    }
+.textarea {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    resize: vertical;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    }
+.textarea:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    }
+
+
