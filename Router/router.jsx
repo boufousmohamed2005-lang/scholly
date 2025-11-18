@@ -2,15 +2,16 @@
 import Home  from '../pages/Home'
 import Login from '../pages/Login'
 import Signup from '../pages/Sign'
-// import  NoteFound  from '../pages/notefound'
+import  NoteFound  from '../pages/notefound'
 import Layaout from '../layaout/layaout'
 import Dashboard from '../DashBoard/dashboard'
  import {  createHashRouter } from 'react-router-dom';
-//import { createBrowserRouter } from 'react-router-dom'
+//import {  createBrowserRouter } from 'react-router-dom'
+
 // import UserList from '../src/components/Users/UserList'
 // import StudentsPage from '../DashBoard/components/Students'
 
-export const  router = createHashRouter ([
+export const  router =  createHashRouter([
   {
    element: <Layaout />,
     children : [
@@ -35,10 +36,10 @@ export const  router = createHashRouter ([
   //   path: '/usr',
   //   element: <UserList />
   // },
-  //  {
-  //   path: '*',
-  //   element: <NoteFound />
-  // }
+    {
+    path: '*',
+    element: <NoteFound />
+  }
     ]
 
   },

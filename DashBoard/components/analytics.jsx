@@ -35,7 +35,7 @@ export default function Analytics({children,lineData,barData}) {
  
 
   return (
-    <div className="dashboard-container">
+    <div className=".dashboard-container-analytics">
       <h3>Reports & Analytics</h3><br />
       <div className="tab-bar">
         {tabs.map((tab) => (

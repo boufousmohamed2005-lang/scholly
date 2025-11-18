@@ -78,7 +78,7 @@ color: #121212;
 width: 100%;
   left: 0;
   bottom: 0;
-position: sticky;
+
   border-radius: 10px;
 
 
@@ -94,7 +94,7 @@ position: sticky;
   cursor: pointer;
     left: 0;
   bottom: 0;
-position: sticky;
+
   padding: 1px;
   width: 100%;
   border-radius: 10px;
