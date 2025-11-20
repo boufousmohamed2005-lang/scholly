@@ -25,11 +25,11 @@ const Header = ({ darkMode, toggleDarkMode }) => {
           <Logo darkMode={darkMode} />
 
           <nav className="header-nav">
-            <a href="#features">Fonctionnalités</a>
+            <a href="#features">functions </a>
             <a href="#benefits">Avantages</a>
             
           </nav>
-
+           
           <div className="header-actions">
             <button
               onClick={toggleDarkMode}

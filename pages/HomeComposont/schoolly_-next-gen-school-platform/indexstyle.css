@@ -986,6 +986,7 @@ html.dark .chart-bar {
 .cta {
   padding: 5rem 0;
   background-color: white;
+  
 }
 html.dark .cta {
   background-color: var(--slate-900);
