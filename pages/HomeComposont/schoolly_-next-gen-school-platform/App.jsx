@@ -29,7 +29,12 @@ export default function App() {
   };
 
   return (
-    <div className="app-root">
+    <div className="app-root" 
+    // onClick={()=>{
+    //   // document.querySelector(".header_home").style.position = "fixed";
+    //   alert("hello");
+    // }}
+    >
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <main>
         <Hero />

@@ -29,7 +29,7 @@ const Hero = () => {
         </div>
       </div>
       </section>
-    
+      
         <div className="hero-visual animate-fade-in-up">
           <div className="mockup-window">
             <div className="mockup-header">
@@ -68,8 +68,8 @@ const Hero = () => {
             </div>
           </div>
         </div>
-
-      </div>
+</div>
+   
 
    
   );

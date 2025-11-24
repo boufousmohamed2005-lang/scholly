@@ -135,7 +135,8 @@ const Dashboard = () => {
                     {activeItem === "Dashboard" && (
                         <>
                             <div className="bienvunue">
-                                <h1>Good afternoon, Admin User ! </h1> <br />
+                                <h1>Good afternoon, Admin User ! 
+                                      </h1> <br />
                                 Monitor school operations and track key metrics.
                             </div>
 

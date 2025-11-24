@@ -10,6 +10,7 @@ body {
 /* Container */
 .login-container {
   min-height: 100vh;
+ 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,8 +35,9 @@ body {
 }
 
 /* Card */
-.card {
+.card1 {
   background: #fff;
+   border: 1px solid blue;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   padding: 20px 10px;

@@ -11,7 +11,7 @@ import Dashboard from '../DashBoard/dashboard'
 // import UserList from '../src/components/Users/UserList'
 // import StudentsPage from '../DashBoard/components/Students'
 
-export const  router =  createHashRouter([
+export const  router = createHashRouter([
   {
    element: <Layaout />,
     children : [

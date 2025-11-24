@@ -25,7 +25,10 @@ const Header = ({ darkMode, toggleDarkMode }) => {
           <Logo darkMode={darkMode} />
 
           <nav className="header-nav">
-            <a href="#features">functions </a>
+            <a href="#features" onClick={()=>{
+              document.querySelector(".header_home").style.position = "relative";
+              
+            } }>functions </a>
             <a href="#benefits">Avantages</a>
             
           </nav>
@@ -47,13 +50,14 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle mobile menu"
             >
+             
               {isMenuOpen ? <X height={32} width={32} /> : <Menu height={32} width={32} />}
             </button>
           </div>
         </div>
       </div>
       
-      <div
+      {/* <div
         className={`mobile-nav-backdrop ${isMenuOpen ? 'open' : ''}`}
         onClick={() => setIsMenuOpen(false)}
         aria-hidden="true"
@@ -63,16 +67,34 @@ const Header = ({ darkMode, toggleDarkMode }) => {
         <nav>
           <a href="#features" onClick={() => setIsMenuOpen(false)}>Fonctionnalités</a>
           <a href="#benefits" onClick={() => setIsMenuOpen(false)}>Avantages</a>
-          <a href="#pricing" onClick={() => setIsMenuOpen(false)}>Tarifs</a>
-          <a href="#" onClick={() => setIsMenuOpen(false)}>Menu</a>
-        </nav>
-        <div className="mobile-nav-actions">
-           <a href="#" className="btn btn-ghost">Connexion</a>
+          <a href="#" className="btn btn-ghost">Connexion</a>
            <a href="#" className="btn btn-primary">
               Commencer <ArrowRight height={16} width={16} />
             </a>
-        </div>
-      </div>
+        </nav>
+       
+      </div> */}
+      {/* Backdrop */}
+<div
+  className={`mobile-nav-backdrop ${isMenuOpen ? 'open' : ''}`}
+  onClick={() => setIsMenuOpen(false)}
+  aria-hidden="true"
+/>
+
+{/* Mobile Menu */}
+<div className={`mobile-nav ${isMenuOpen ? 'open' : ''}`}>
+  <nav> 
+    <X  className='munue-close' size={45} onClick={() => setIsMenuOpen(false)} />
+    <a href="#features" onClick={() => setIsMenuOpen(false)}>Fonctionnalités</a>
+    <a href="#benefits" onClick={() => setIsMenuOpen(false)}>Avantages</a>
+
+    <a href="#" className="btn btn-ghost">Connexion</a>
+    <a href="#" className="btn btn-primary">
+      Commencer <ArrowRight height={16} width={16} />
+    </a>
+  </nav>
+</div>
+
     </header>
   );
 };
