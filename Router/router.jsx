@@ -40,14 +40,13 @@
 //   },
 // ]);
 
-import Home from "../pages/Home";
+ import Home from "../pages/Home";
 import Login from "../pages/Login";
-import Signup from "../pages/Signup";       // ⚠️ Ton fichier doit s’appeler Signup.jsx
-import NotFound from "../pages/NotFound";  // ⚠️ Ton fichier doit s’appeler NotFound.jsx
-import Layout from "../layout/Layout";     // ⚠️ Corrigé : pas "layaout" mais "layout"
+import Signup from "../pages/Sign";
+import NoteFound from "../pages/notefound";
+import Layaout from "../layaout/layaout";
 import Dashboard from "../DashBoard/dashboard";
-import { createHashRouter } from "react-router-dom";
-
+import {  createHashRouter } from 'react-router-dom';
 export const router = createHashRouter([
   {
     element: <Layout />,
