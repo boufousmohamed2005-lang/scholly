@@ -11,6 +11,7 @@
   box-shadow: 0 2px 4px var(--shadow);
   border-radius: none;
   margin-bottom: 10px;
+  
 }
 .header.dark-mode{
     height: 60px;

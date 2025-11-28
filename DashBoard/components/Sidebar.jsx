@@ -19,14 +19,14 @@ import {
 import { Link } from "react-router-dom"
 import "./sidebar.css"
 const navItems = [
-  { name: "Dashboard", icon: <LayoutDashboard size={18}/> },
-  { name: "Étudiants", icon: <GraduationCap size={18}/> },
-  { name: "Professeurs", icon: <Users size={18}/> },
-  { name: "Cours", icon: <BookOpen size={18}/> },
-  { name: "Regions", icon: <MapPin size={18}/> },
-  { name: "Contact", icon: <Contact2 size={18}/> },
-  { name: "Saisie", icon: <Bell size={18}/> },
-   { name: "Paramètres", icon: <Settings size={18}/> },
+  { name: "Dashboard", icon: <LayoutDashboard size={20}/> },
+  { name: "Étudiants", icon: <GraduationCap size={20}/> },
+  { name: "Professeurs", icon: <Users size={20}/> },
+  { name: "Cours", icon: <BookOpen size={20}/> },
+  { name: "Regions", icon: <MapPin size={20}/> },
+  { name: "Contact", icon: <Contact2 size={20}/> },
+  { name: "Saisie", icon: <Bell size={20}/> },
+   { name: "Paramètres", icon: <Settings size={20}/> },
   
 ]
 
@@ -62,12 +62,12 @@ const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode }) => {
 
         <div className="help-box">
            <nav  onClick={toggleDarkMode}>
-        {darkMode ? <MoonIcon  color="black"  strokeWidth={3} size={16} /> :  <SunIcon size={18}   color="yellow" strokeWidth={3}  /> }
+        {darkMode ? <MoonIcon  color="black"  strokeWidth={3} size={16} /> :  <SunIcon size={20}   color="yellow" strokeWidth={3}  /> }
         { open && "theme" }
       </nav>
       <br />
         
-        <Link to="/" style={{color:"red"}} > <LogOut  size={18} color="red" strokeWidth={3} />  { open && "Logout" } </Link> 
+        <Link to="/" style={{color:"red"}} > <LogOut  size={20} color="red" strokeWidth={3} />  { open && "Logout" } </Link> 
         
           
         </div>

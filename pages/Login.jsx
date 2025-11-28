@@ -1,26 +1,53 @@
 
 
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./login.css";
 import { GraduationCap } from "lucide-react";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
+
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+  const [userRole, setUserRole] = useState("directeur");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null);
-  const navigate = useNavigate()
-const location = useLocation()
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage(null);
- navigate("/dashboard"); 
- alert("Connexion réussie !",location.pathname);
-    // Simuler une requête d'authentification
 
-  }
+    // Validation basique
+    if (!formData.email || !formData.password) {
+      setMessage({ type: "error", text: "Veuillez remplir tous les champs" });
+      setIsLoading(false);
+      return;
+    }
+
+    // Simuler une requête d'authentification
+    console.log("Données du formulaire:", formData);
+    console.log("Rôle de l'utilisateur:", userRole);
+
+    // Sauvegarder le rôle dans localStorage
+    localStorage.setItem("userRole", userRole);
+    localStorage.setItem("userEmail", formData.email);
+    localStorage.setItem("isAuthenticated", "true");
+
+    // Simuler délai API
+    setTimeout(() => {
+      setIsLoading(false);
+      setMessage({ type: "success", text: "Connexion réussie !" });
+      
+      // Rediriger vers le dashboard après 1.5s
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    }, 1000);
+  };
 
   return (
     <div className="login-container">
@@ -30,11 +57,29 @@ const location = useLocation()
         </a>
         <div className="card1">
           <div className="card-header-lo">
-            <div className="icon-circle"><GraduationCap size={40}/></div>
+            <div className="icon-circle"><GraduationCap size={40} /></div>
             <h2 className="card-title">Connexion</h2>
-          <br />
+            <br />
             <p className="card-description">Connectez-vous à votre compte Schoolly</p>
           </div>
+
+          {/* Sélecteur de rôle pour test */}
+          <div className="role-test-selector">
+            <label>Rôle de test:</label>
+            <div className="role-buttons">
+              {["etudiant", "prof", "directeur"].map((role) => (
+                <button
+                  key={role}
+                  type="button"
+                  className={`role-btn ${userRole === role ? "active" : ""}`}
+                  onClick={() => setUserRole(role)}
+                >
+                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="card-content">
             {message && (
               <div className={`message ${message.type}`}>
@@ -48,8 +93,8 @@ const location = useLocation()
                   id="email"
                   type="email"
                   placeholder="nom@exemple.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                 />
               </div>
@@ -62,8 +107,8 @@ const location = useLocation()
                   id="password"
                   type="password"
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
                 />
               </div>
@@ -72,7 +117,7 @@ const location = useLocation()
               </button>
             </form>
             <div className="signup-link">
-              Pas encore de compte ? <Link to="/signup" >Créer un compte</Link>
+              Pas encore de compte ? <Link to="/signup">Créer un compte</Link>
             </div>
           </div>
         </div>

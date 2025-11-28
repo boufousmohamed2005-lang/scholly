@@ -24,7 +24,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
         <div className="header-inner">
           <Logo darkMode={darkMode} />
 
-          <nav className="header-nav">
+          <nav className="header-nav1">
             <a href="#features" onClick={()=>{
               document.querySelector(".header_home").style.position = "relative";
               

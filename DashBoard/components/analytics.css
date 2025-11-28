@@ -7,22 +7,17 @@
   --radius: 14px;
 }
 
-body.dark {
-  --bg: #0f172a;
-  --card: #1e293b;
-  --text: #f3f4f6;
-  --border: #334155;
-  --accent: #60a5fa;
-}
+
 
 /* Container */
-.dashboard-container-analytics {
+.dashboard-container {
   font-family: "Inter", sans-serif;
   background: var(--bg);
   color: var(--text);
   padding: 1.5rem;
   min-height: 100vh;
   transition: 0.3s ease;
+  
 }
 
 /* Tabs */
@@ -108,7 +103,9 @@ body.dark {
   padding: 1.2rem 1.5rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
-
+.full{
+   margin-top: 2rem;
+}
 .chart-card h3 {
   font-size: 1rem;
   margin-bottom: 0.8rem;
@@ -124,6 +121,4 @@ body.dark {
   color: #64748b;
 }
 
-body.dark .placeholder {
-  background: rgba(255, 255, 255, 0.05);
-}
+

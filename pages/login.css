@@ -157,9 +157,69 @@ input:focus {
   text-decoration: underline;
 }
 
+/* Role Test Selector */
+.role-test-selector {
+  padding: 15px;
+  background: rgba(0, 102, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(0, 102, 255, 0.2);
+}
+
+.role-test-selector label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.role-btn {
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 12px;
+  border: 2px solid #d0d0d0;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.role-btn:hover {
+  border-color: #0066ff;
+  color: #0066ff;
+  background: rgba(0, 102, 255, 0.05);
+}
+
+.role-btn.active {
+  background: #0066ff;
+  color: white;
+  border-color: #0066ff;
+  box-shadow: 0 4px 8px rgba(0, 102, 255, 0.3);
+}
+
 /* Responsive */
 @media (max-width: 480px) {
   .card-content {
     padding: 16px;
   }
+
+  .role-buttons {
+    flex-direction: column;
+  }
+
+  .role-btn {
+    min-width: unset;
+  }
 }
+

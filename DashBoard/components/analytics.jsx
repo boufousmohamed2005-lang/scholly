@@ -35,7 +35,7 @@ export default function Analytics({children,lineData,barData}) {
  
 
   return (
-    <div className=".dashboard-container-analytics">
+    <div className="dashborard-containe">
       <h3>Reports & Analytics</h3><br />
       <div className="tab-bar">
         {tabs.map((tab) => (
@@ -94,6 +94,7 @@ export default function Analytics({children,lineData,barData}) {
         )}
 
         {activeTab === "attendance" && (
+          
           <div className="chart-card full">
             <h3>Attendance Trends</h3>
             <ResponsiveContainer width="100%" height={350}>

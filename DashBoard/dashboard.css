@@ -32,73 +32,25 @@
 
 .dashboard {
   display: flex;
-  height: 100vh;
+  height: 100%;
+ overflow: auto;
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* .sidebar {
-  width: 200px;
-  background-color: var(--sidebar-bg);
-  padding: 20px;
-  border-right: 1px solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-  
-} */
 
-/* .sidebar-item {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  font-size: 1rem;
-  padding: 12px;
-  margin-bottom: 10px;
-  width: 100%;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-} */
- /* style={{padding :"10px 0",borderBottom:"2px solid blue","}} */
-/* .title{
- font-weight: bold;
- font-size: 2.2rem;
- margin-bottom: 10px ;
- padding :10px 0;
- width:100%;
-} */
-
-
-/* 
-.sidebar-item.active {
-  background-color: var(--accent-color);
-  color: white;
-}
-
-.sidebar-icon {
-  margin-right: 12px;
-  font-size: 18px;
-}
-
-.sidebar-menu{
-  display: flex;
-  margin-top: 15px;
-  width: 100%;
- 
-} */
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   background-color: var(--das);
-  
+  overflow: scroll;
 }
  
 .bienvunue{
     
     background-color:var(--accent-color);
-    
     color:#fff;
     width:100%;
     padding: 20px 30px;
