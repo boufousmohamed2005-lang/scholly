@@ -1,6 +1,10 @@
 import React from "react";
 import "./statcard.css";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp,
+  TrendingDownIcon,
+  TrendingUpIcon
+
+ } from "lucide-react";
 
 const StatCard = ({ title, value = 0, icon, color, setActiveItem, id }) => {
   return (
@@ -17,7 +21,12 @@ const StatCard = ({ title, value = 0, icon, color, setActiveItem, id }) => {
 
         <nav className="statistique">
           <p>
-            <ArrowUp size={18} color="rgb(3, 255, 3)" /> {value}%
+
+           {
+           value   > 0 ?  <TrendingUpIcon size={25} color="rgb(3, 255, 3)" /> : 
+            <TrendingDownIcon size={18} color="rgba(255, 53, 3, 1)"  />
+            }
+             {  value }%
           </p>
           <span>vs last month</span>
         </nav>

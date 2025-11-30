@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import StatCard from "./components/StatCard";
-
+import Info from "./components/Etudiant/Info"
+import Contact from "./components/contact"; 
+import Tempdemploi from "./components/Etudiant/Tempdemploi"
 import Analytics from "./components/analytics";
 import Students from "./components/Students";
+import Parametre from './components/Parametre'
 import LineChart from "./components/LineChart";
 import Teachers from "./components/Teachers";
 import Courses from "./components/Courses";
-
+import StudentsClassmet from "./components/Etudiant/StudentClassmet"
 import Regions from "./components/regions";
 import Payments from "./components/Payments";
 import CustomerReviews from "./components/CustomerReviews";
 import NewestBooking from "./components/NewestBooking";
 import Saisie from "./components/Saisie";
+import ContactReclation from "./components/ContactReclation";
 // import TopBar from '../pages/Sign';
 import "./dashboard.css";
 import {
@@ -26,7 +30,10 @@ import {
     Settings,
     Menu,
     X,
+  
+    
 } from "lucide-react";
+
 
 
 const Dashboard = () => {
@@ -34,15 +41,7 @@ const Dashboard = () => {
     // const [searchQuery, setSearchQuery] = useState('');
     const [etu, setetu] = useState(0);
 
-    console.log("Number of students:", etu);
-    // Hardcoded data
-    //   Dashboard
-    // Étudiants
-    // Professeurs
-    // Cours
-    // Regions
-    // Paramètres
-    // Contact
+   
     const stats = [
         {
             id: "Cours",
@@ -114,12 +113,27 @@ const Dashboard = () => {
     { text: "Professor Smith updated course materials", time: "25 min ago" },
     { text: "Exam schedule published", time: "1 hour ago" },
   ];
-
+const [role,setrole]=useState();
     const [darkMode, setDarkMode] = useState(false);
     const toggleDarkMode = () => {
         setDarkMode(!darkMode);
     };
+    useEffect(()=>{
+        
+       const rolee = localStorage.getItem("userRole");
+     
+      setrole(rolee);
+      if ( role == "student" ) setActiveItem("Class") 
+        if( role == "professor"  ) setActiveItem("Étudiants")
+    },[role]);
 
+
+    const [teachers, setTeachers] = useState([
+        { id: "TEA001", name: "John Smith", email: "john.smith@school.edu", salary: 3500, experience: 5, department: "Math", subject: "Algebra" },
+        { id: "TEA002", name: "Linda Brown", email: "linda.brown@school.edu", salary: 4000, experience: 8, department: "Science", subject: "Physics" },
+        { id: "TEA003", name: "Mark Taylor", email: "mark.taylor@school.edu", salary: 3200, experience: 3, department: "English", subject: "Literature" },
+      ]);
+  
     return (
         <div className={`dashboard ${darkMode ? "dark-mode" : ""}`}>
             <Sidebar
@@ -127,6 +141,7 @@ const Dashboard = () => {
                 setActiveItem={setActiveItem}
                 toggleDarkMode={toggleDarkMode}
                 darkMode={darkMode}
+                role={role}
             />
             <div className="main-content">
                 <Header activeItem={activeItem} />
@@ -150,29 +165,71 @@ const Dashboard = () => {
                             </div>
                             <Analytics activities={activities} isDark={darkMode} barData={barData} lineData={lineData} >
                             <div className="linecahart"> 
-                            <LineChart data={chartData} title="Etudiant vs Profs" />
-                            <LineChart data={chartData2}  title=" mohaemme "/></div>
+                            <LineChart  data={chartData} title="Etudiant vs Profs" />
+                          
+                            <LineChart data={chartData2}  title="mohaemme"/></div>
                             </Analytics>
                             <div className="bottom-section">
                     
-                                     <Saisie />
+                                   
                                 <CustomerReviews />
                             </div>
                             <NewestBooking />
                         </>
                     )}
 
-                    {activeItem === "Étudiants" && <Students setetu={setetu} />}
-                    {activeItem === "Professeurs" && <Teachers darkMode={darkMode}  />}
-                    {activeItem === "Cours" && <Courses />}
+                    {activeItem === "Étudiants" && <Students setetu={setetu}  />}
+                    {activeItem === "Professeurs" && <Teachers darkMode={darkMode}  role={role} teachers={teachers} setTeachers={setTeachers} />}
+                    {activeItem === "Cours" && <Courses  />}
                     {activeItem === "Regions" && <Regions />}
                     {activeItem === "payments" && <Payments />}
-                    {activeItem === "Saisie" && <Saisie/>}
+                    {activeItem === "Saisie" && <Saisie role={role} />}
+                    {activeItem === "Reclamation" && <ContactReclation />}
+                    {activeItem === "Contact" && <Contact role={role} />}
+                    {activeItem === "Paramètres" && <Parametre />}
+                    {activeItem === "Emploie" && <Tempdemploi  timetable={ [
+  { dayIndex: 0, heure: "08:30 - 10:00", matiere: "Maths", prof: "Mr. Karim", salle: "A12" },
+  { dayIndex: 0, heure: "10:00 - 11:30", matiere: "Physique", prof: "Mme Salma", salle: "B02" },
+
+  { dayIndex: 1, heure: "14:00 - 15:30", matiere: "Informatique", prof: "Mr Yassine", salle: "Lab 1" },
+
+  { dayIndex: 3, heure: "09:00 - 10:30", matiere: "Anglais", prof: "Mme Sarah", salle: "C01" },
+]
+} />}
+
+                    {activeItem === "Profile" && <Info  student={ {
+    firstname: "Youssef",
+    lastname: "Benhima",
+    email: "youssef@example.com",
+    studentId: "ST202560",
+    major: "Développement Web",
+    level: "2ème année",
+    enrollDate: "2023-09-15",
+  
+
+    grades: [
+      { subject: "Programmation", coeff: 3, grade: 15 },
+      { subject: "Base de données", coeff: 2, grade: 14 },
+      { subject: "Réseaux", coeff: 2, grade: 9 },
+      { subject: "Mathématiques", coeff: 2, grade: 11 },
+      { subject: "Anglais", coeff: 1, grade: 16 },
+    ],
+  }} />}
+
+                    {activeItem === "Class" && <StudentsClassmet className="mrhba" students={  [
+    { id: 1, nom: "El Idrissi", prenom: "Sara", email: "sara@gmail.com" },
+    { id: 2, nom: "Boulhyan", prenom: "Youssef", email: "youssef@gmail.com" },
+    { id: 3, nom: "Hachimi", prenom: "Amine", email: "amine@gmail.com" },
+    { id: 4, nom: "Hachimi", prenom: "Amine", email: "amine@gmail.com" },
+    { id: 5, nom: "Hachimi", prenom: "Amine", email: "amine@gmail.com" },
+    { id: 6, nom: "Hachimi", prenom: "Amine", email: "amine@gmail.com" },
+    { id: 7, nom: "Hachimi", prenom: "Amine", email: "amine@gmail.com" },
+  ]} />}
                    
                 </div>
             </div>
 
-            <p></p>
+            
         </div>
     );
 };

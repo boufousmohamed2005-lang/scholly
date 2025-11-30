@@ -53,7 +53,7 @@ export default function Analytics({children,lineData,barData}) {
       {/* Conditional Render */}
       <div className="tab-content">
         {activeTab === "overview" && (
-          <>
+          <div   style={{gap:"20px"}} >
            
 
             <div className="chart-row">
@@ -89,8 +89,9 @@ export default function Analytics({children,lineData,barData}) {
                 </ResponsiveContainer>
               </div>
             </div>
+      <br />
             {children}
-          </>
+          </div>
         )}
 
         {activeTab === "attendance" && (
@@ -108,9 +109,10 @@ export default function Analytics({children,lineData,barData}) {
             </ResponsiveContainer>
           </div>
         )}
-
+   
+   {activeTab == "performance" && <h1> no </h1>}
        
-
+  {activeTab == "finance" && <h1> no </h1>}
        
       </div>
     </div>

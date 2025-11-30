@@ -1,0 +1,295 @@
+/* PAGE WRAPPER */
+.student-container {
+  max-width: 550px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 18px;
+  border: 2px solid #f5d48b;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* HEADER */
+.student-header {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.student-avatar {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  border: 3px solid #ffc857;
+  object-fit: cover;
+  box-shadow: 0 5px 15px rgba(255, 200, 87, 0.4);
+}
+
+.student-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+.student-id {
+  color: #a17c00;
+  font-size: 14px;
+  margin-top: 4px;
+  background: #fff5d6;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border-left: 4px solid #e0a229;
+}
+
+/* INFO LIST */
+.student-info p {
+  background: #fff8e9;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border-left: 4px solid #e0a229;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  transition: 0.25s;
+}
+
+.student-info p:hover {
+  background: #ffeec7;
+  transform: scale(1.02);
+}
+
+.student-info span {
+  font-weight: bold;
+  color: #444;
+}
+
+/* NOTES TABLE */
+/* .notes-title {
+  margin-top: 25px;
+  margin-bottom: 12px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #d08a00;
+  background: linear-gradient(to right, #d6931c, #ffce4e);
+
+  color: transparent;
+} */
+
+.notes-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fffef7;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(255, 210, 120, 0.3);
+}
+
+.notes-table th {
+  background: #ffd77a;
+  padding: 12px;
+  text-align: left;
+  color: #4c3a00;
+  font-size: 15px;
+}
+
+.notes-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f2e3b3;
+  font-size: 14px;
+}
+
+/* NOTES COLORS */
+.good-grade {
+  color: green;
+  font-weight: bold;
+}
+
+.bad-grade {
+  color: red;
+  font-weight: bold;
+}
+
+/* EMPTY MESSAGE */
+.student-empty {
+  text-align: center;
+  background: #fff3cf;
+  padding: 15px;
+  border-radius: 10px;
+  color: #a07900;
+  max-width: 400px;
+  margin: 40px auto;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- ICÔNE CIRCULAIRE --- */
+.student-icon {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffcc4d, #e6a500);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 6px 15px rgba(255, 200, 87, 0.4);
+  border: 3px solid #ffc857;
+}
+
+/* --- CONTAINER PRINCIPAL --- */
+.student-container {
+  width: 90%;
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(30, 64, 175, 0.15);
+  border: 1px solid rgba(37, 99, 235, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* --- HEADER --- */
+.student-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+/* --- AVATAR / ICON --- */
+.student-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Pulse autour du cercle */
+.icon-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(37, 99, 235, 0.4);
+  animation: pulseAnim 1.6s infinite ease-out;
+}
+
+@keyframes pulseAnim {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+/* --- NOM --- */
+.student-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.student-id {
+  color: #4463c4;
+  font-weight: 500;
+}
+
+/* --- INFO ÉTUDIANT --- */
+.student-info p {
+  margin: 6px 0;
+  font-size: 16px;
+}
+
+.student-info span {
+  font-weight: bold;
+  color: #1e40af;
+}
+
+/* --- TITRE DES NOTES --- */
+.notes-title {
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-size: 20px;
+ height: 30px;
+  color: #1e3a8a;
+  font-weight: bold;
+  border-left: 4px solid #2563eb;
+  border-radius: 6px;
+  padding-left: 15px;
+  
+}
+
+/* --- TABLE DES NOTES --- */
+.notes-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.notes-table thead {
+  background: #1e3a8a;
+  color: white;
+}
+
+.notes-table th {
+  padding: 12px;
+  font-size: 15px;
+}
+
+.notes-table td {
+  padding: 10px;
+  text-align: center;
+  font-size: 15px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Hover sur les lignes */
+.notes-table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.08);
+  transition: 0.2s;
+}
+
+/* --- BAD & GOOD GRADES --- */
+.good-grade {
+  font-weight: bold;
+  color: #16a34a;
+}
+
+.bad-grade {
+  font-weight: bold;
+  color: #dc2626;
+}
+
+/* --- EMPTY STATE --- */
+.student-empty {
+  text-align: center;
+  padding: 25px;
+  background: #eff6ff;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,88 +1,121 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 import "./contact.css";
-import { MessageCircle } from "lucide-react";
-export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
+
+export default function ContactSupport() {
+  const [form, setForm] = useState({
+    fullname: "",
     email: "",
-    message: ""
+    subject: "",
+    message: "",
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [sent, setSent] = useState(false);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  }
+  const validate = () => {
+    let e = {};
 
-  function handleSubmit(e) {
+    if (!form.fullname.trim()) e.fullname = "Nom obligatoire";
+    if (!form.email.includes("@") || form.email.length < 5)
+      e.email = "Email invalide";
+    if (form.subject.trim().length < 3)
+      e.subject = "Sujet trop court (min. 3 caractères)";
+    if (form.message.trim().length < 10)
+      e.message = "Message trop court (min. 10 caractères)";
+
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    setFormData({ name: "", email: "", message: "" });
-  }
+
+    if (!validate()) return;
+
+    try {
+      await axios.post("http://localhost:8000/api/contact", form);
+
+      setSent(true);
+      setForm({ fullname: "", email: "", subject: "", message: "" });
+
+      setTimeout(() => setSent(false), 3500);
+    } catch (err) {
+      alert("Erreur lors de l'envoi !"+  err.message);
+    }
+  };
 
   return (
-    <div className="contact-section">
+    <div className="contact-wrapper">
       <div className="contact-card">
-        <h2 className="contact-title">Contactez-nous  < MessageCircle /> </h2>
-        <p className="contact-subtitle">
-          Une question, une remarque… Je suis là pour vous aider ✅  
+
+        <h2 className="title2">Déclarer votre  Problème</h2>
+        <p className="subtitle">
+          Nous sommes là pour vous aider. Décrivez votre problème.
         </p>
 
-        <form className="contact-form" onSubmit={handleSubmit}>
+        {sent && <div className="success-msg">✔ Message envoyé avec succès !</div>}
+
+        <form onSubmit={handleSubmit} className="form">
+
+          {/* NOM */}
           <div className="form-group">
             <label>Nom complet</label>
             <input
               type="text"
-              name="name"
-              placeholder="Votre nom"
-              value={formData.name}
+              name="fullname"
+              value={form.fullname}
               onChange={handleChange}
-              required
+              className={errors.fullname ? "error-input" : ""}
             />
+            {errors.fullname && <small className="error-text">{errors.fullname}</small>}
           </div>
 
+          {/* EMAIL */}
           <div className="form-group">
             <label>Email</label>
             <input
               type="email"
               name="email"
-              placeholder="exemple@mail.com"
-              value={formData.email}
+              value={form.email}
               onChange={handleChange}
-              required
+              className={errors.email ? "error-input" : ""}
             />
+            {errors.email && <small className="error-text">{errors.email}</small>}
           </div>
 
+          {/* SUJET */}
+          <div className="form-group">
+            <label>Sujet</label>
+            <input
+              type="text"
+              name="subject"
+              value={form.subject}
+              onChange={handleChange}
+              className={errors.subject ? "error-input" : ""}
+            />
+            {errors.subject && <small className="error-text">{errors.subject}</small>}
+          </div>
+
+          {/* MESSAGE */}
           <div className="form-group">
             <label>Message</label>
             <textarea
               name="message"
-              placeholder="Votre message"
-              rows="4"
-              value={formData.message}
+              rows="5"
+              value={form.message}
               onChange={handleChange}
-              required
-            />
+              className={errors.message ? "error-input" : ""}
+            ></textarea>
+            {errors.message && <small className="error-text">{errors.message}</small>}
           </div>
 
-          <button type="submit" className="contact-btn">
-            Envoyer 
-          </button>
-
-          {submitted && (
-            <p className="success-msg">✅ Message envoyé avec succès</p>
-          )}
+          <button className="btn-submit">Envoyer</button>
         </form>
-      </div>
-
-      <div className="contact-info">
-        <h3>Nos Coordonnées</h3>
-        <p>📍 Adresse: Marrakech, Maroc</p>
-        <p>📧 Email: support@monapp.com</p>
-        <p>📞 Téléphone: +212 6 00 00 00 00</p>
       </div>
     </div>
   );

@@ -1,0 +1,243 @@
+/* ===========================
+   GLOBAL THEME + DARK MODE
+=========================== */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.25);
+  --text-color: #1a1a1a;
+  --subtext-color: #555;
+  --neon-blue: #4ea8ff;
+  --neon-purple: #c77dff;
+  --neon-green: #3ddc97;
+  --neon-orange: #ffb74d;
+
+  --card-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.dark {
+  --glass-bg: rgba(18, 18, 18, 0.35);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --text-color: #f5f5f5;
+  --subtext-color: #bdbdbd;
+  --card-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* ===========================
+   MAIN CARD (GLASSMORPHISM)
+=========================== */
+.glass-card {
+  width: 100%;
+  padding: 25px;
+  border-radius: 18px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--card-shadow);
+margin: 10px 0;
+  transition: 0.3s ease-in-out;
+}
+
+.glass-card:hover {
+  transform: translateY(-3px);
+}
+
+/* ===========================
+   HEADER
+=========================== */
+.glass-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-color);
+  margin-bottom: 15px;
+}
+
+.glass-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ===========================
+   STATS SECTION
+=========================== */
+.stats-wrapper-etu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.stat-card-etu {
+  padding: 16px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  font-weight: 600;
+  box-shadow: var(--card-shadow);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.stat-card-etu:hover {
+  transform: translateY(-4px);
+}
+
+
+/* Neon gradient backgrounds */
+.stat-card-etu.blue {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+.stat-card-etu.green {
+  background: linear-gradient(135deg, #10b981, #34d399);
+}
+.stat-card-etu.purple {
+  background: linear-gradient(135deg, #8b5cf6, #c084fc);
+}
+.stat-card-etu.orange {
+  background: linear-gradient(135deg, #f97316, #fb923c);
+}
+
+.stat-card-etu h3 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.stat-card-etu p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* ===========================
+   SEARCH BAR
+=========================== */
+.search-bar {
+  width: 100%;
+  margin: 18px 0;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-color);
+  font-size: 15px;
+  outline: none;
+  box-shadow: var(--card-shadow);
+  transition: 0.3s;
+}
+
+.search-bar input:focus {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 10px var(--neon-purple);
+}
+
+/* ===========================
+   TABLE
+=========================== */
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  color: var(--text-color);
+}
+
+.glass-table th,
+.glass-table td {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.glass-table th {
+  background: var(--glass-bg);
+  border-bottom: 2px solid var(--glass-border);
+  font-weight: 700;
+  color: var(--neon-blue);
+}
+
+.glass-table tr {
+
+  transition: 0.2s;
+}
+
+.glass-table tr:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.dark .glass-table tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ===========================
+   AVATAR
+=========================== */
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 18px;
+  color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+/* ===========================
+   PAGINATION
+=========================== */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.page-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  color: var(--text-color);
+  transition: 0.3s;
+}
+.page-btn:disabled{
+    cursor: no-drop;
+    background-color: #727272;
+}
+.page-btn:disabled:hover{
+    background-color: red;
+}
+.page-btn:hover {
+  background: var(--neon-purple);
+  color: white;
+  box-shadow: 0 0 8px var(--neon-purple);
+}
+
+.page-btn.active {
+  background: var(--neon-blue);
+  color: white;
+  box-shadow: 0 0 10px var(--neon-blue);
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 650px) {
+  .glass-table th:nth-child(3),
+  .glass-table td:nth-child(3) { 
+    display: none; /* Hide email on small screens */
+  }
+
+  .avatar{
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Bell, Edit, Trash2, PlusCircle } from "lucide-react";
 import "./saisie.css";
 
-export default function RecentActivity({ isDark }) {
+export default function RecentActivity({ isDark,role }) {
   const [activities, setActivities] = useState([
     { id: 1, text: "Cours de React", datetime: "2025-10-29T18:00" },
     { id: 2, text: "Réunion professeurs", datetime: "2025-10-30T09:30" },
@@ -52,13 +52,17 @@ export default function RecentActivity({ isDark }) {
   };
 
   return (
+   
     <div className={`recent-activity ${isDark ? "dark" : ""}`}>
+       { 
+      role !== "student" && role !== "professor"  && <>
       <div className="recent-header">
         <h2>
           <Bell size={20} /> Recent Activity
         </h2>
       </div>
-
+     
+     
       <div className="add-activity">
         <input
           type="text"
@@ -72,10 +76,12 @@ export default function RecentActivity({ isDark }) {
           min={new Date().toISOString().slice(0,16)}
           onChange={(e) => setNewDateTime(e.target.value)}
         />
-        <button onClick={handleAddOrEdit}>
+    
+      <button onClick={handleAddOrEdit}>
           <PlusCircle size={18} /> {editId ?  "Modifier" : "Ajouter"}
         </button>
       </div>
+      </>}
 
       <ul className="activity-list">
         {activities.length > 0 ? (
@@ -88,13 +94,16 @@ export default function RecentActivity({ isDark }) {
                 <p className="activity-text">{a.text}</p>
                 <span className="activity-time">📅 {formatDateTime(a.datetime)}</span>
               </div>
+
               <div className="activity-actions">
+          {  role != "student" && role != "professor" && <>
                 <button onClick={() => handleEdit(a)} title="Modifier">
                   <Edit size={16} />
                 </button>
                 <button onClick={() => handleDelete(a.id)} title="Supprimer">
                   <Trash2 size={16} />
-                </button>
+                </button></>
+                }
               </div>
             </li>
           ))
@@ -102,6 +111,9 @@ export default function RecentActivity({ isDark }) {
           <p className="no-activity">Aucune activité pour le moment.</p>
         )}
       </ul>
+      
+
     </div>
+  
   );
 }

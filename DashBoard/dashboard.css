@@ -32,8 +32,10 @@
 
 .dashboard {
   display: flex;
-  height: 100%;
- overflow: auto;
+  
+ overflow-y: auto;
+height: 100%;
+ width: 100%;
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -45,7 +47,7 @@
   display: flex;
   flex-direction: column;
   background-color: var(--das);
-  overflow: scroll;
+  
 }
  
 .bienvunue{
@@ -141,7 +143,7 @@ gap: 10px;
 .dashboard-content {
   flex: 1;
   padding: 0 20px;
-  overflow: scroll;
+  overflow-y: scroll;
   background-color: var(--das);
  
 }

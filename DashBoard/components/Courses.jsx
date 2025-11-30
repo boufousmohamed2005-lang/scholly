@@ -8,7 +8,7 @@ const defaultSubjects = [
   { id: "3", code: "CHEM101", name: "Chimie", description: "Cours de chimie" },
 ];
 
-export default function CoursesPage() {
+export default function CoursesPage({role}) {
   const [subjects, setSubjects] = useState([]);
   const [filteredSubjects, setFilteredSubjects] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -92,7 +92,7 @@ export default function CoursesPage() {
 
   return (
     <div className={`courses-page theme`}>
-      <div className="header">
+     { role == "student" ? null : <div className="header">
         <div>
           <h1>Gestion des matières</h1>
           <p>Gérez toutes les matières enseignées</p>
@@ -102,7 +102,7 @@ export default function CoursesPage() {
             <Plus size={16} /> Ajouter une matière
           </button>
         </div>
-      </div>
+      </div>}
 
       {/* Dashboard Statistiques */}
       <div className="dashboard">
@@ -155,7 +155,7 @@ export default function CoursesPage() {
                 <th onClick={() => handleSort("code")}>Code <ChevronDown size={12} /></th>
                 <th onClick={() => handleSort("name")}>Nom <ChevronDown size={12} /></th>
                 <th>Description</th>
-                <th>Actions</th>
+               {role == "student"? null  : <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -165,10 +165,10 @@ export default function CoursesPage() {
                     <td>{subject.code}</td>
                     <td>{subject.name}</td>
                     <td>{subject.description}</td>
-                    <td>
+                  { role == "student"? null  : <td>
                       <button className="btn-icon edit" onClick={() => handleOpenDialog(subject)}><Pencil size={16} /></button>
                       <button className="btn-icon delete" onClick={() => handleDelete(subject.id)}><Trash2 size={16} /></button>
-                    </td>
+                    </td>}
                   </tr>
                 ))
               ) : (

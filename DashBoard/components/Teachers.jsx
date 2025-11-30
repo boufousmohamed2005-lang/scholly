@@ -7,16 +7,12 @@ import {
   Plus,
   Search,
   X,
- 
+User2
 } from "lucide-react";
 import "./teachers.css";
 
-const TeacherPage = ({darkMode}) => {
-  const [teachers, setTeachers] = useState([
-    { id: "TEA001", name: "John Smith", email: "john.smith@school.edu", salary: 3500, experience: 5, department: "Math", subject: "Algebra" },
-    { id: "TEA002", name: "Linda Brown", email: "linda.brown@school.edu", salary: 4000, experience: 8, department: "Science", subject: "Physics" },
-    { id: "TEA003", name: "Mark Taylor", email: "mark.taylor@school.edu", salary: 3200, experience: 3, department: "English", subject: "Literature" },
-  ]);
+const TeacherPage = ({darkMode,role ,teachers,setTeachers}) => {
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTeachers, setFilteredTeachers] = useState(teachers);
@@ -110,7 +106,7 @@ const TeacherPage = ({darkMode}) => {
   return (
     <div className="teacher-page">
       {/* HEADER */}
-      <div className="header">
+      { role == "student" ? null : <div className="header">
         <div>
           <h1>Teacher Management</h1>
           <p>Manage teacher records, salary, and experience</p>
@@ -121,33 +117,33 @@ const TeacherPage = ({darkMode}) => {
           </button>
         
         </div>
-      </div>
+      </div>}
 
       {/* STATS */}
       <div className="stats-grid">
         <div className="stat-card blue">
-          <Trophy size={26} />
+          <User2 size={26} />
           <div>
             <h3>{teachers.length}</h3>
             <p>Total Teachers</p>
           </div>
         </div>
 
-        <div className="stat-card green">
+       {  role == "student" ? null :  <div className="stat-card green">
           <Trophy size={26} />
           <div>
             <h3>${avgSalary}</h3>
             <p>Average Salary</p>
           </div>
-        </div>
+        </div>}
 
-        <div className="stat-card purple">
+      {  role == "student" ? null : <div className="stat-card purple">
           <CalendarDays size={26} />
           <div>
             <h3>{avgExperience} yrs</h3>
             <p>Avg Experience</p>
           </div>
-        </div>
+        </div>}
       </div>
 
       {/* TABLE */}
@@ -170,11 +166,11 @@ const TeacherPage = ({darkMode}) => {
               <th>ID</th>
               <th>Name</th>
               <th>Email</th>
-              <th>Salary</th>
-              <th>Experience</th>
+              { role == "student" ? null :  <th>Salary</th>}
+         {  role == "student" ? null :     <th>Experience</th>}
               <th>Department</th>
               <th>Subject</th>
-              <th>Actions</th>
+             {  role == "student" ? null :   <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -183,18 +179,18 @@ const TeacherPage = ({darkMode}) => {
                 <td>{t.id}</td>
                 <td>{t.name}</td>
                 <td>{t.email}</td>
-                <td>${t.salary}</td>
-                <td>{t.experience} yrs</td>
+                {  role == "student" ? null :  <td>${t.salary}</td>}
+               { role == "student" ? null :  <td>{t.experience} yrs</td>}
                 <td>{t.department}</td>
                 <td>{t.subject}</td>
-                <td className="actions">
+               { role == "student" ? null :  <td className="actions">
                   <button className="icon-btn edit" onClick={() => handleEdit(t)}>
                     <Pencil size={16} />
                   </button>
                   <button className="icon-btn delete" onClick={() => handleDelete(t.id)}>
                     <Trash2 size={16} />
                   </button>
-                </td>
+                </td>}
               </tr>
             ))}
           </tbody>

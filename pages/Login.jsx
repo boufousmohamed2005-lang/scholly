@@ -29,13 +29,11 @@ export default function Login() {
     }
 
     // Simuler une requête d'authentification
-    console.log("Données du formulaire:", formData);
-    console.log("Rôle de l'utilisateur:", userRole);
+    
 
     // Sauvegarder le rôle dans localStorage
     localStorage.setItem("userRole", userRole);
-    localStorage.setItem("userEmail", formData.email);
-    localStorage.setItem("isAuthenticated", "true");
+    
 
     // Simuler délai API
     setTimeout(() => {
@@ -67,7 +65,7 @@ export default function Login() {
           <div className="role-test-selector">
             <label>Rôle de test:</label>
             <div className="role-buttons">
-              {["etudiant", "prof", "directeur"].map((role) => (
+              {["student", "professor", "directeur"].map((role) => (
                 <button
                   key={role}
                   type="button"

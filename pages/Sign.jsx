@@ -16,21 +16,21 @@ export default function Signup() {
     confirmPassword: "",
   });
 
-  const [etudiantForm, setEtudiantForm] = useState({
+  const [studentForm, setstudentForm] = useState({
     classe: "",
-    etablissement: "",
+    Departement: "",
   });
 
   const [profForm, setProfForm] = useState({
     telephone: "",
-    etablissement: "",
+    Departement: "",
     matiere: "",
   });
 
   const [directeurForm, setDirecteurForm] = useState({
     telephone: "",
     bureau: "",
-    etablissement: "",
+    Departement: "",
     cartePro: "",
   });
 
@@ -47,8 +47,8 @@ export default function Signup() {
 
   const updateField = (section, name, value) => {
     if (section === "global") setGlobalForm((s) => ({ ...s, [name]: value }));
-    else if (section === "etudiant") setEtudiantForm((s) => ({ ...s, [name]: value }));
-    else if (section === "prof") setProfForm((s) => ({ ...s, [name]: value }));
+    else if (section === "student") setstudentForm((s) => ({ ...s, [name]: value }));
+    else if (section === "professor") setProfForm((s) => ({ ...s, [name]: value }));
     else if (section === "directeur") setDirecteurForm((s) => ({ ...s, [name]: value }));
   };
 
@@ -80,17 +80,17 @@ export default function Signup() {
     else if (!validatePassword(globalForm.password)) newErrors.password = "Le mot de passe doit avoir au moins 8 caractères";
     if (globalForm.password !== globalForm.confirmPassword) newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
 
-    if (role === "etudiant") {
-      if (!etudiantForm.classe.trim()) newErrors.classe = "La classe est requise";
-      if (!etudiantForm.etablissement.trim()) newErrors.etablissement = "L'établissement est requis";
-    } else if (role === "prof") {
+    if (role === "student") {
+      if (!studentForm.classe.trim()) newErrors.classe = "La classe est requise";
+      if (!studentForm.Departement.trim()) newErrors.Departement = "L'établissement est requis";
+    } else if (role === "professor") {
       if (!profForm.telephone.trim()) newErrors.telephone = "Le téléphone est requis";
-      if (!profForm.etablissement.trim()) newErrors.etablissement = "L'établissement est requis";
+      if (!profForm.Departement.trim()) newErrors.Departement = "L'établissement est requis";
       if (!profForm.matiere.trim()) newErrors.matiere = "La matière est requise";
     } else if (role === "directeur") {
       if (!directeurForm.telephone.trim()) newErrors.telephone = "Le téléphone est requis";
       if (!directeurForm.bureau.trim()) newErrors.bureau = "Le bureau est requis";
-      if (!directeurForm.etablissement.trim()) newErrors.etablissement = "L'établissement est requis";
+   
       if (!directeurForm.cartePro.trim()) newErrors.cartePro = "La carte professionnelle est requise";
     }
 
@@ -104,17 +104,17 @@ export default function Signup() {
     if (!validateForm()) return;
     setIsSubmitting(true);
     const payload = { role, ...globalForm };
-    if (role === "etudiant") Object.assign(payload, etudiantForm);
-    if (role === "prof") Object.assign(payload, profForm);
+    if (role === "student") Object.assign(payload, studentForm);
+    if (role === "professor") Object.assign(payload, profForm);
     if (role === "directeur") Object.assign(payload, directeurForm);
     console.log("Form ready:", payload);
 
     // Sauvegarder le rôle et les données utilisateur dans localStorage
     localStorage.setItem("userRole", role);
-    localStorage.setItem("userEmail", globalForm.email);
-    localStorage.setItem("userName", `${globalForm.nom} ${globalForm.prenom}`);
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("userData", JSON.stringify(payload));
+    // localStorage.setItem("userEmail", globalForm.email);
+    // localStorage.setItem("userName", `${globalForm.nom} ${globalForm.prenom}`);
+    // localStorage.setItem("isAuthenticated", "true");
+    // localStorage.setItem("userData", JSON.stringify(payload));
 
     setSuccessMessage("✅ Compte créé avec succès !");
     setTimeout(() => {
@@ -139,8 +139,8 @@ export default function Signup() {
 
           <div className="role-selector">
             <button className={role === "directeur" ? "active" : ""} onClick={() => { setRole("directeur"); setErrors({}); }}>Directeur</button>
-            <button className={role === "prof" ? "active" : ""} onClick={() => { setRole("prof"); setErrors({}); }}>Professeur</button>
-            <button className={role === "etudiant" ? "active" : ""} onClick={() => { setRole("etudiant"); setErrors({}); }}>Étudiant</button>
+            <button className={role === "professor" ? "active" : ""} onClick={() => { setRole("prof"); setErrors({}); }}>Professeur</button>
+            <button className={role === "student" ? "active" : ""} onClick={() => { setRole("student"); setErrors({}); }}>Étudiant</button>
           </div>
 
           {successMessage && <div className="success-message">{successMessage}</div>}
@@ -153,18 +153,18 @@ export default function Signup() {
             <InputField label="Mot de passe" name="password" type="password" value={globalForm.password} onChange={handleChange('global')} onBlur={handleBlur()} error={errors.password} />
             <InputField label="Confirmer le mot de passe" name="confirmPassword" type="password" value={globalForm.confirmPassword} onChange={handleChange('global')} onBlur={handleBlur()} error={errors.confirmPassword} />
 
-            {role === 'etudiant' && (
+            {role === 'student' && (
               <>
-                <InputField label="Classe" name="classe" value={etudiantForm.classe} onChange={handleChange('etudiant')} onBlur={handleBlur()} error={errors.classe} />
-                <InputField label="Établissement" name="etablissement" value={etudiantForm.etablissement} onChange={handleChange('etudiant')} onBlur={handleBlur()} error={errors.etablissement} />
+                <InputField label="Classe" name="classe" value={studentForm.classe} onChange={handleChange('student')} onBlur={handleBlur()} error={errors.classe} />
+                <InputField label="Établissement" name="Departement" value={studentForm.Departement} onChange={handleChange('student')} onBlur={handleBlur()} error={errors.Departement} />
               </>
             )}
 
-            {role === 'prof' && (
+            {role === 'professor' && (
               <>
-                <InputField label="Téléphone" name="telephone" type="tel" value={profForm.telephone} onChange={handleChange('prof')} onBlur={handleBlur()} error={errors.telephone} />
-                <InputField label="Établissement" name="etablissement" value={profForm.etablissement} onChange={handleChange('prof')} onBlur={handleBlur()} error={errors.etablissement} />
-                <InputField label="Matière" name="matiere" value={profForm.matiere} onChange={handleChange('prof')} onBlur={handleBlur()} error={errors.matiere} />
+                <InputField label="Téléphone" name="telephone" type="tel" value={profForm.telephone} onChange={handleChange('professor')} onBlur={handleBlur()} error={errors.telephone} />
+                <InputField label="Établissement" name="Departement" value={profForm.Departement} onChange={handleChange('professor')} onBlur={handleBlur()} error={errors.Departement} />
+                <InputField label="Matière" name="matiere" value={profForm.matiere} onChange={handleChange('professor')} onBlur={handleBlur()} error={errors.matiere} />
               </>
             )}
 
@@ -172,7 +172,7 @@ export default function Signup() {
               <>
                 <InputField label="Téléphone" name="telephone" value={directeurForm.telephone} onChange={handleChange('directeur')} onBlur={handleBlur()} error={errors.telephone} />
                 <InputField label="Bureau" name="bureau" value={directeurForm.bureau} onChange={handleChange('directeur')} onBlur={handleBlur()} error={errors.bureau} />
-                <InputField label="Établissement" name="etablissement" value={directeurForm.etablissement} onChange={handleChange('directeur')} onBlur={handleBlur()} error={errors.etablissement} />
+               
                 <InputField label="Carte professionnelle" name="cartePro" value={directeurForm.cartePro} onChange={handleChange('directeur')} onBlur={handleBlur()} error={errors.cartePro} />
               </>
             )}

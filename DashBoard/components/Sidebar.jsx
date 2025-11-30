@@ -9,11 +9,17 @@ import {
   Menu,
   X,
   Bell,
+  BellElectricIcon,
   MoonIcon,
   SunIcon,
   LogOut ,
   Contact2,
+User,
+Info,
  
+CalendarDays,
+ FileText,
+ UserRound
 
 } from "lucide-react"
 import { Link } from "react-router-dom"
@@ -24,15 +30,38 @@ const navItems = [
   { name: "Professeurs", icon: <Users size={20}/> },
   { name: "Cours", icon: <BookOpen size={20}/> },
   { name: "Regions", icon: <MapPin size={20}/> },
-  { name: "Contact", icon: <Contact2 size={20}/> },
+   { name: "Profile", icon: <Info size={20}/> },
+  { name: "Reclamation", icon: <BellElectricIcon size={20}/> },
   { name: "Saisie", icon: <Bell size={20}/> },
    { name: "Paramètres", icon: <Settings size={20}/> },
   
 ]
+const navItemsetu = [
+   { name: "Class", icon: <UserRound size={20}/> },
+  { name: "Emploie", icon: <CalendarDays size={20}/> },
+  { name: "Profile", icon: <Info size={20}/> },
+   { name: "Cours", icon: <BookOpen size={20}/> },
+  { name: "Professeurs", icon: <FileText size={20}/> }, 
+   { name: "Saisie", icon: <Bell size={20}/> },
+  { name: "Contact", icon: <Contact2 size={20}/> },
+   { name: "Paramètres", icon: <Settings size={20}/> },
+]
 
-const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode }) => {
+const navItemProf=[
+   
+  { name: "Étudiants", icon: <GraduationCap size={20}/> },
+  { name: "Emploie", icon: <CalendarDays size={20}/> },
+ 
+  { name: "Profile", icon: <Info size={20}/> },
+  { name: "Contact", icon: <Contact2 size={20}/> },
+  { name: "Saisie", icon: <Bell size={20}/> },
+   { name: "Paramètres", icon: <Settings size={20}/> },
+]
+const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode,role }) => {
   const [open, setOpen] = useState(true)
+ 
 
+  
   return (
     <div className="parent-sidebar">
     
@@ -42,7 +71,11 @@ const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode }) => {
 
         <nav>
           <ul>
-            {navItems.map((item) => (
+            {
+
+             (role == "student" ? navItemsetu :  role == "professor" ? navItemProf : navItems)
+          
+            .map((item) => (
               <li
                 key={item.name}
                 className={`sidebar-item ${
@@ -54,7 +87,7 @@ const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode }) => {
                 }}
               >
                 {item.icon}
-              { open && <span>{item.name}</span>  }   
+              {   open && <span>{item.name}</span>  }   
               </li>
             ))}
           </ul>
