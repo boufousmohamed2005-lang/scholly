@@ -30,6 +30,7 @@ import {
     Settings,
     Menu,
     X,
+    BellDot,
   
     
 } from "lucide-react";
@@ -65,11 +66,11 @@ const Dashboard = () => {
             icon: <Users />,
         },
         {
-            id: "Regions",
+            id: "Saisie",
             color: "orange",
-            title: "All Regions",
+            title: "All Notification",
             value: "78",
-            icon: <MapPin />,
+            icon: <BellDot />,
         },
     ];
 
