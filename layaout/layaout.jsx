@@ -8,7 +8,7 @@ const location = useLocation();
  <div>
    {
       location.pathname == "/dashboard" && <h3 className="dashboard-header" >
-        welcome back </h3>
+        welcome  </h3>
 
    }
         <Outlet />
