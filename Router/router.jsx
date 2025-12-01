@@ -15,7 +15,7 @@ export const router = createHashRouter ([
     element: <Layaout />,
     children: [
       {
-        path: "",
+        path: "/",
         element: <Home />,
       },
 
