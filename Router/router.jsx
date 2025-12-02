@@ -10,7 +10,7 @@ import { createBrowserRouter } from "react-router-dom";
 // import UserList from '../src/components/Users/UserList'
 // import StudentsPage from '../DashBoard/components/Students'
 
-export const router =createBrowserRouter ([
+export const router =createHashRouter  ([
   {
     element: <Layaout />,
     children: [
