@@ -4,7 +4,7 @@ import {
 
 Loader2
 } from 'lucide-react';
-const Header = ({ activeItem }) => {
+const Header = ({ activeItem,role }) => {
   
 //     const [darkMode, setDarkMode] = React.useState(false);
 //  const toggleDarkMode = () => {
@@ -27,7 +27,7 @@ const Header = ({ activeItem }) => {
    
       <p>
         Name <br />
-        Admin User
+        {role}  usr
       </p>
       </span>
      </nav>

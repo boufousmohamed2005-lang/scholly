@@ -7,6 +7,7 @@ import Contact from "./components/contact";
 import Tempdemploi from "./components/Etudiant/Tempdemploi"
 import Analytics from "./components/analytics";
 import Students from "./components/Students";
+import Profileprof from "./components/prof/InfoProf"
 import Parametre from './components/Parametre'
 import LineChart from "./components/LineChart";
 import Teachers from "./components/Teachers";
@@ -34,6 +35,7 @@ import {
   
     
 } from "lucide-react";
+import EmploideTempDir from "./components/EmploiDeTempDir";
 
 
 
@@ -145,7 +147,7 @@ const [role,setrole]=useState();
                 role={role}
             />
             <div className="main-content">
-                <Header activeItem={activeItem} />
+                <Header activeItem={activeItem} role={role} />
 
                 <div className="dashboard-content">
                     {activeItem === "Dashboard" && (
@@ -181,9 +183,10 @@ const [role,setrole]=useState();
 
                     {activeItem === "Étudiants" && <Students setetu={setetu}  />}
                     {activeItem === "Professeurs" && <Teachers darkMode={darkMode}  role={role} teachers={teachers} setTeachers={setTeachers} />}
-                    {activeItem === "Cours" && <Courses  />}
+                    {activeItem === "Cours" && <Courses role={role}  />}
+                    {activeItem === "Emploi" &&  <EmploideTempDir />  }
                     {activeItem === "Regions" && <Regions />}
-                    {activeItem === "payments" && <Payments />}
+                    {activeItem === "Info" && <Profileprof />}
                     {activeItem === "Saisie" && <Saisie role={role} />}
                     {activeItem === "Reclamation" && <ContactReclation />}
                     {activeItem === "Contact" && <Contact role={role} />}

@@ -139,7 +139,7 @@ export default function Signup() {
 
           <div className="role-selector">
             <button className={role === "directeur" ? "active" : ""} onClick={() => { setRole("directeur"); setErrors({}); }}>Directeur</button>
-            <button className={role === "professor" ? "active" : ""} onClick={() => { setRole("prof"); setErrors({}); }}>Professeur</button>
+            <button className={role === "professor" ? "active" : ""} onClick={() => { setRole("professor"); setErrors({}); }}>Professeur</button>
             <button className={role === "student" ? "active" : ""} onClick={() => { setRole("student"); setErrors({}); }}>Étudiant</button>
           </div>
 

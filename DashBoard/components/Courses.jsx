@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, School, ChevronDown } from "lucide-react";
 import "./courses.css";
 
-const defaultSubjects = [
-  { id: "1", code: "MATH101", name: "Mathématiques", description: "Cours de maths de base" },
-  { id: "2", code: "PHYS101", name: "Physique", description: "Cours de physique" },
-  { id: "3", code: "CHEM101", name: "Chimie", description: "Cours de chimie" },
-];
+
 
 export default function CoursesPage({role}) {
   const [subjects, setSubjects] = useState([]);
@@ -14,14 +10,20 @@ export default function CoursesPage({role}) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const [formData, setFormData] = useState({ name: "", code: "", description: "" });
- 
+ const [supp, setSupp] = useState();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
 
   useEffect(() => {
-    const storedSubjects = JSON.parse(localStorage.getItem("subjects") || "[]");
-    setSubjects(storedSubjects.length ? storedSubjects : defaultSubjects);
+
+    // api ici 
+    const storedSubjects = [ { id: "1", code: "MATH101", name: "Mathématiques", description: "Cours de maths de base" },
+       { id: "2", code: "M101", name: "Mathématiques", description: "Cours de maths de base" },
+        { id: "3", code: "M101", name: "Mathématiques", description: "Cours de maths de base" }
+     
+    ]
+    setSubjects(storedSubjects.length ? storedSubjects :null);
   }, []);
 
   useEffect(() => {
@@ -50,15 +52,16 @@ export default function CoursesPage({role}) {
       updatedSubjects = [...subjects, { id: Date.now().toString(), ...formData }];
     }
     setSubjects(updatedSubjects);
-    localStorage.setItem("subjects", JSON.stringify(updatedSubjects));
+   
     setIsDialogOpen(false);
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer cette matière ?")) {
       const updatedSubjects = subjects.filter((s) => s.id !== id);
+      //const deleteobje = subjects.filter((s) => s.id == id)
       setSubjects(updatedSubjects);
-      localStorage.setItem("subjects", JSON.stringify(updatedSubjects));
+       setSupp( e =>[...e , subjects.filter((s) => s.id == id)])
     }
   };
 
@@ -178,6 +181,19 @@ export default function CoursesPage({role}) {
               )}
             </tbody>
           </table>
+
+          {supp.length > 0 &&  supp.map( (subject) => {
+            return (
+              <pre key={subject.id}>
+              
+                    {subject.code}
+                    {subject.name}
+                  {subject.description}
+              </pre>
+            )
+          }
+
+          )}
         </div>
       </div>
 

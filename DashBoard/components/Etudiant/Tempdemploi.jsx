@@ -31,6 +31,8 @@ const ScheduleCalendar = ({ timetable }) => {
   const todayCourses = timetable.filter((c) => c.dayIndex === currentDay);
 
   return (
+
+    
     <div className="calendar-card">
 
       {/* Header */}

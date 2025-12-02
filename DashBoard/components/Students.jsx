@@ -132,7 +132,7 @@ const StudentPage = ({setetu}) => {
       {/* STATS */}
       <div className="stats-grid">
         <div className="stat-card-etu blue">
-          <GraduationCap size={26} />
+          <GraduationCap size={26} color="white" />
           <div>
             <h3>{students.length}</h3>
             <p>Total Students</p>
@@ -140,7 +140,7 @@ const StudentPage = ({setetu}) => {
         </div>
 
         <div className="stat-card-etu green">
-          <Trophy size={26} />
+          <Trophy size={26}  color="white" />
           <div>
             <h3>{avgGPA}</h3>
             <p>Average GPA</p>
@@ -148,7 +148,7 @@ const StudentPage = ({setetu}) => {
         </div>
 
         <div className="stat-card-etu purple">
-          <CalendarDays size={26} />
+          <CalendarDays size={26}  color="white" />
           <div>
             <h3>{avgAttendance}%</h3>
             <p>Avg Attendance</p>
@@ -156,7 +156,7 @@ const StudentPage = ({setetu}) => {
         </div>
 
         <div className="stat-card-etu orange">
-          <Star size={26} />
+          <Star size={26}  color="white" />
           <div>
             <h3>{students.filter((s) => s.gpa >= 3.7).length}</h3>
             <p>Honor Students</p>

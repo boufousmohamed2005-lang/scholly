@@ -19,7 +19,9 @@ Info,
  
 CalendarDays,
  FileText,
- UserRound
+ UserRound,
+ CalendarClockIcon,
+ Calendar
 
 } from "lucide-react"
 import { Link } from "react-router-dom"
@@ -30,6 +32,7 @@ const navItems = [
   { name: "Professeurs", icon: <Users size={20}/> },
   { name: "Cours", icon: <BookOpen size={20}/> },
   { name: "Regions", icon: <MapPin size={20}/> },
+  { name: "Emploi", icon: <Calendar size={20}/> },
    { name: "Profile", icon: <Info size={20}/> },
   { name: "Reclamation", icon: <BellElectricIcon size={20}/> },
   { name: "Saisie", icon: <Bell size={20}/> },
@@ -52,7 +55,7 @@ const navItemProf=[
   { name: "Étudiants", icon: <GraduationCap size={20}/> },
   { name: "Emploie", icon: <CalendarDays size={20}/> },
  
-  { name: "Profile", icon: <Info size={20}/> },
+  { name: "Info", icon: <Info size={20}/> },
   { name: "Contact", icon: <Contact2 size={20}/> },
   { name: "Saisie", icon: <Bell size={20}/> },
    { name: "Paramètres", icon: <Settings size={20}/> },
