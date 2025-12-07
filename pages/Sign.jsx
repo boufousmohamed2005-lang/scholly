@@ -1,97 +1,63 @@
 import React, { useState } from "react";
 import "./sign.css";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import { GraduationCap } from "lucide-react";
+import api from "../src/Api";
+import useAuth from "../src/hook/Usehook";
 
 export default function Signup() {
   const [role, setRole] = useState("directeur");
-
-  // form sections
+  const { setUser } = useAuth();
+const nav = useNavigate();
+  // GLOBAL FORM
   const [globalForm, setGlobalForm] = useState({
-    nom: "",
-    prenom: "",
+    name: "",
+    prenom: "", // ajouté pour etudiant et directeur
     email: "",
-    age: "",
     password: "",
-    confirmPassword: "",
   });
 
-  const [studentForm, setstudentForm] = useState({
-    classe: "",
-    Departement: "",
-  });
-
-  const [profForm, setProfForm] = useState({
-    telephone: "",
-    Departement: "",
-    matiere: "",
-  });
-
-  const [directeurForm, setDirecteurForm] = useState({
-    telephone: "",
-    bureau: "",
-    Departement: "",
-    cartePro: "",
-  });
+  // Specific forms
+  const [studentForm, setStudentForm] = useState({ Class: "" });
+  const [profForm, setProfForm] = useState({ Departement: "", Subject: "",});
+  const [directeurForm, setDirecteurForm] = useState({ Telephone: "", Bureau: "", CartePro: "" });
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
-  const validatePassword = (password) => password.length >= 8;
-
-  const updateField = (section, name, value) => {
-    if (section === "global") setGlobalForm((s) => ({ ...s, [name]: value }));
-    else if (section === "student") setstudentForm((s) => ({ ...s, [name]: value }));
-    else if (section === "professor") setProfForm((s) => ({ ...s, [name]: value }));
-    else if (section === "directeur") setDirecteurForm((s) => ({ ...s, [name]: value }));
-  };
 
   const handleChange = (section) => (e) => {
     const { name, value } = e.target;
-    updateField(section, name, value);
-    if (errors[name]) setErrors((p) => { const c = { ...p }; delete c[name]; return c; });
-  };
 
-  const handleBlur = () => (e) => {
-    const { name, value } = e.target;
-    const newErrors = { ...errors };
-    if (!value || (typeof value === "string" && !value.trim())) newErrors[name] = `Le champ ${name} est requis`;
-    else if (name === "email" && !validateEmail(value)) newErrors.email = "Email invalide";
-    else if (name === "password" && !validatePassword(value)) newErrors.password = "Le mot de passe doit avoir au moins 8 caractères";
-    else if (name === "confirmPassword" && value !== globalForm.password) newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
-    else delete newErrors[name];
-    setErrors(newErrors);
+    if (section === "global") setGlobalForm({ ...globalForm, [name]: value });
+    if (section === "etudiant") setStudentForm({ ...studentForm, [name]: value });
+    if (section === "professeur") setProfForm({ ...profForm, [name]: value });
+    if (section === "directeur") setDirecteurForm({ ...directeurForm, [name]: value });
+
+    if (errors[name]) {
+      const copy = { ...errors };
+      delete copy[name];
+      setErrors(copy);
+    }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    if (!globalForm.nom.trim()) newErrors.nom = "Le nom est requis";
-    if (!globalForm.prenom.trim()) newErrors.prenom = "Le prénom est requis";
-    if (!globalForm.email.trim()) newErrors.email = "L'email est requis";
-    else if (!validateEmail(globalForm.email)) newErrors.email = "Email invalide";
-    if (!globalForm.age || globalForm.age < 13) newErrors.age = "L'âge doit être au moins 13 ans";
-    if (!globalForm.password) newErrors.password = "Le mot de passe est requis";
-    else if (!validatePassword(globalForm.password)) newErrors.password = "Le mot de passe doit avoir au moins 8 caractères";
-    if (globalForm.password !== globalForm.confirmPassword) newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
+    if (!globalForm.name) newErrors.name = "Le nom est requis";
+    if ((role === "etudiant" || role === "directeur") && !globalForm.prenom) newErrors.prenom = "Le prénom est requis";
+    if (!globalForm.email) newErrors.email = "Email requis";
+    if (!globalForm.password || globalForm.password.length < 6)
+      newErrors.password = "Mot de passe min 6 caractères";
 
-    if (role === "student") {
-      if (!studentForm.classe.trim()) newErrors.classe = "La classe est requise";
-      if (!studentForm.Departement.trim()) newErrors.Departement = "L'établissement est requis";
-    } else if (role === "professor") {
-      if (!profForm.telephone.trim()) newErrors.telephone = "Le téléphone est requis";
-      if (!profForm.Departement.trim()) newErrors.Departement = "L'établissement est requis";
-      if (!profForm.matiere.trim()) newErrors.matiere = "La matière est requise";
-    } else if (role === "directeur") {
-      if (!directeurForm.telephone.trim()) newErrors.telephone = "Le téléphone est requis";
-      if (!directeurForm.bureau.trim()) newErrors.bureau = "Le bureau est requis";
-   
-      if (!directeurForm.cartePro.trim()) newErrors.cartePro = "La carte professionnelle est requise";
+    if (role === "etudiant" && !studentForm.Class) newErrors.Class = "Classe requise";
+    if (role === "professeur") {
+      
+      if (!profForm.Departement) newErrors.Departement = "Département requis";
+      if (!profForm.Subject) newErrors.Subject = "Matière requise";
+    }
+    if (role === "directeur") {
+      if (!directeurForm.Telephone) newErrors.Telephone = "Téléphone requis";
+      if (!directeurForm.Bureau) newErrors.Bureau = "Bureau requis";
+      if (!directeurForm.CartePro) newErrors.CartePro = "Carte professionnelle requise";
     }
 
     setErrors(newErrors);
@@ -100,84 +66,117 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSuccessMessage("");
     if (!validateForm()) return;
+
     setIsSubmitting(true);
-    const payload = { role, ...globalForm };
-    if (role === "student") Object.assign(payload, studentForm);
-    if (role === "professor") Object.assign(payload, profForm);
-    if (role === "directeur") Object.assign(payload, directeurForm);
-    console.log("Form ready:", payload);
 
-    // Sauvegarder le rôle et les données utilisateur dans localStorage
-    localStorage.setItem("userRole", role);
-    // localStorage.setItem("userEmail", globalForm.email);
-    // localStorage.setItem("userName", `${globalForm.nom} ${globalForm.prenom}`);
-    // localStorage.setItem("isAuthenticated", "true");
-    // localStorage.setItem("userData", JSON.stringify(payload));
+    const payload = {
+      role: role,
+      name: globalForm.name,
+      prenom: globalForm.prenom, // pour directeur et etudiant
+      email: globalForm.email,
+      password: globalForm.password,
+    };
 
-    setSuccessMessage("✅ Compte créé avec succès !");
-    setTimeout(() => {
+    if (role === "etudiant") {
+      Object.assign(payload, {
+        Nom: globalForm.name,
+        Prenom: globalForm.prenom,
+        Email: globalForm.email,
+        Class: studentForm.Class,
+      });
+    }
+
+    if (role === "professeur") {
+      Object.assign(payload, {
+        Name: globalForm.name,
+        Email: globalForm.email,
+        
+        Department: profForm.Departement,
+        Subject: profForm.Subject,
+      });
+    }
+
+    if (role === "directeur") {
+      Object.assign(payload, {
+        Nom: globalForm.name,
+        Prenom: globalForm.prenom,
+        Telephone: directeurForm.Telephone,
+        Bureau: directeurForm.Bureau,
+        CartePro: directeurForm.CartePro,
+      });
+    }
+
+    try {
+      const res = await api.post("/signup", payload);
+      sessionStorage.setItem("token", res.data.token);
+        sessionStorage.setItem("role", res.data.user?.role || role); 
+      setUser(res.data.user);
+      alert("Compte créé avec succès !");
+      nav("/dashboard");
+    } catch (err) {
+      if (err.response) {
+        console.log("Erreur :", err.response.data);
+        alert(JSON.stringify(err.response.data, null, 2));
+      } else {
+        alert("Erreur réseau");
+      }
+    } finally {
       setIsSubmitting(false);
-      // Rediriger vers le dashboard après 2s
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 1000);
-    }, 1200);
+    }
   };
 
   return (
     <div className="register-page">
       <div className="register-container">
         <Link to="/" className="back-link">← Retour</Link>
+
         <div className="create-account-form">
           <div className="card-header-sin">
             <div className="logo-box"><GraduationCap size={40} /></div>
             <h2>Créer votre compte</h2>
-            {role === "directeur" && <p style={{ color: "black" }}>Commencez à gérer votre établissement dès aujourd'hui</p>}
           </div>
 
           <div className="role-selector">
-            <button className={role === "directeur" ? "active" : ""} onClick={() => { setRole("directeur"); setErrors({}); }}>Directeur</button>
-            <button className={role === "professor" ? "active" : ""} onClick={() => { setRole("professor"); setErrors({}); }}>Professeur</button>
-            <button className={role === "student" ? "active" : ""} onClick={() => { setRole("student"); setErrors({}); }}>Étudiant</button>
+            {["directeur", "professeur", "etudiant"].map(r => (
+              <button key={r} className={role === r ? "active" : ""} onClick={() => { setRole(r); setErrors({}); }}>
+                {r}
+              </button>
+            ))}
           </div>
 
-          {successMessage && <div className="success-message">{successMessage}</div>}
+          <form onSubmit={handleSubmit}>
+            <InputField label="Nom" name="name" value={globalForm.name} onChange={handleChange("global")} error={errors.name} />
 
-          <form className="signup-form" onSubmit={handleSubmit}>
-            <InputField label="Nom" name="nom" value={globalForm.nom} onChange={handleChange('global')} onBlur={handleBlur()} error={errors.nom} />
-            <InputField label="Prénom" name="prenom" value={globalForm.prenom} onChange={handleChange('global')} onBlur={handleBlur()} error={errors.prenom} />
-            <InputField label="Email" name="email" type="email" value={globalForm.email} onChange={handleChange('global')} onBlur={handleBlur()} error={errors.email} />
-            <InputField label="Âge" name="age" type="number" value={globalForm.age} onChange={handleChange('global')} onBlur={handleBlur()} error={errors.age} />
-            <InputField label="Mot de passe" name="password" type="password" value={globalForm.password} onChange={handleChange('global')} onBlur={handleBlur()} error={errors.password} />
-            <InputField label="Confirmer le mot de passe" name="confirmPassword" type="password" value={globalForm.confirmPassword} onChange={handleChange('global')} onBlur={handleBlur()} error={errors.confirmPassword} />
+            {(role === "etudiant" || role === "directeur") && (
+              <InputField label="Prénom" name="prenom" value={globalForm.prenom} onChange={handleChange("global")} error={errors.prenom} />
+            )}
 
-            {role === 'student' && (
+            <InputField label="Email" name="email" type="email" value={globalForm.email} onChange={handleChange("global")} error={errors.email} />
+            <InputField label="Mot de passe" name="password" type="password" value={globalForm.password} onChange={handleChange("global")} error={errors.password} />
+
+            {role === "etudiant" && (
+              <InputField label="Class" name="Class" value={studentForm.Class} onChange={handleChange("etudiant")} error={errors.Class} />
+            )}
+
+            {role === "professeur" && (
               <>
-                <InputField label="Classe" name="classe" value={studentForm.classe} onChange={handleChange('student')} onBlur={handleBlur()} error={errors.classe} />
-                <InputField label="Établissement" name="Departement" value={studentForm.Departement} onChange={handleChange('student')} onBlur={handleBlur()} error={errors.Departement} />
+               <InputField label="Département" name="Departement" value={profForm.Departement} onChange={handleChange("professeur")} error={errors.Departement} />
+                <InputField label="Matière" name="Subject" value={profForm.Subject} onChange={handleChange("professeur")} error={errors.Subject} />
               </>
             )}
 
-            {role === 'professor' && (
+            {role === "directeur" && (
               <>
-                <InputField label="Téléphone" name="telephone" type="tel" value={profForm.telephone} onChange={handleChange('professor')} onBlur={handleBlur()} error={errors.telephone} />
-                <InputField label="Établissement" name="Departement" value={profForm.Departement} onChange={handleChange('professor')} onBlur={handleBlur()} error={errors.Departement} />
-                <InputField label="Matière" name="matiere" value={profForm.matiere} onChange={handleChange('professor')} onBlur={handleBlur()} error={errors.matiere} />
+                <InputField label="Téléphone" name="Telephone" value={directeurForm.Telephone} onChange={handleChange("directeur")} error={errors.Telephone} />
+                <InputField label="Bureau" name="Bureau" value={directeurForm.Bureau} onChange={handleChange("directeur")} error={errors.Bureau} />
+                <InputField label="Carte Professionnelle" name="CartePro" value={directeurForm.CartePro} onChange={handleChange("directeur")} error={errors.CartePro} />
               </>
             )}
 
-            {role === 'directeur' && (
-              <>
-                <InputField label="Téléphone" name="telephone" value={directeurForm.telephone} onChange={handleChange('directeur')} onBlur={handleBlur()} error={errors.telephone} />
-                <InputField label="Bureau" name="bureau" value={directeurForm.bureau} onChange={handleChange('directeur')} onBlur={handleBlur()} error={errors.bureau} />
-               
-                <InputField label="Carte professionnelle" name="cartePro" value={directeurForm.cartePro} onChange={handleChange('directeur')} onBlur={handleBlur()} error={errors.cartePro} />
-              </>
-            )}
-
-            <button className="submit-btn" disabled={isSubmitting}>{isSubmitting ? 'Création en cours...' : 'Créer mon compte'}</button>
+            <button disabled={isSubmitting}>
+              {isSubmitting ? "Création..." : "Créer mon compte"}
+            </button>
           </form>
         </div>
       </div>
@@ -185,18 +184,10 @@ export default function Signup() {
   );
 }
 
-const InputField = ({ label, name, type = 'text', value, onChange, onBlur, error }) => (
+const InputField = ({ label, name, type = "text", value, onChange, error }) => (
   <div className="input-group">
     <label>{label}</label>
-    <input
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-      required
-      className={error ? 'input-error' : ''}
-    />
+    <input type={type} name={name} value={value} onChange={onChange} className={error ? "input-error" : ""} />
     {error && <span className="error-text">{error}</span>}
   </div>
 );

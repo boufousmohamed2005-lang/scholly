@@ -47,6 +47,184 @@
   padding: 20px 20px;
   height: fit-content;
 }
+/* HTML: <div class="loader"></div> */
+.student-page-wrapper {
+  position: relative;
+}
+
+/* Contenu flouté / transparent pendant le chargement */
+.loading-active {
+  opacity: 0.4;
+  transition: opacity 0.5s ease;
+}
+
+/* Loader centré au-dessus du contenu */
+.loader-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 10px;
+  z-index: 100; /* Au-dessus du contenu */
+}
+
+/* Dots animés */
+.loader-dot {
+  width: 15px;
+  height: 15px;
+  /* background: linear-gradient(45deg, #1e90ff, #00f0ff); */
+  background-color: var(--accent);
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.loader-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.loader-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0.1;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0.3;
+  }
+}
+
+
+.grade-popover-wrapper {
+  position: relative;
+  display: inline-block;
+  
+}
+
+.grades-popover {
+  position: absolute;
+  top: 0px;
+  right: 0;
+  width: 250px;
+  transform: translateY(-50%);
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+}
+
+.grades-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.close-popover {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.grades-list {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
+.grade-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 14px;
+  padding: 3px 0;
+}
+
+.grade-subject {
+  font-weight: 500;
+}
+
+.grade-value {
+  margin-left: 5px;
+  color: #007bff;
+}
+
+.grade-teacher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #555;
+}
+
+.grade-actions button {
+  background: none;
+  border: none;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.btn-add-grade {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 5px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.no-grade {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  padding: 5px 0;
+}
+
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-page {
+  padding: 6px 14px;
+  background: var(--primary-color, #4e73df);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-page:disabled {
+  background: #b9c4e0;
+  cursor: not-allowed;
+}
+
+.page-indicator {
+  font-weight: bold;
+  color: #333;
+}
+
 
 .header h1 {
   margin: 0;
@@ -168,6 +346,7 @@
 .student-table {
   width: 100%;
   border-collapse: collapse;
+
   font-size: 0.9rem;
 }
 

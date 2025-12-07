@@ -76,7 +76,7 @@ const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode,role }) =
           <ul>
             {
 
-             (role == "student" ? navItemsetu :  role == "professor" ? navItemProf : navItems)
+             (role == "student" ? navItemsetu :  role == "professeur" ? navItemProf : navItems)
           
             .map((item) => (
               <li

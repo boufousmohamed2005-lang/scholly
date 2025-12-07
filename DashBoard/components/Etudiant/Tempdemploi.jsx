@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import {
   Calendar,
   CalendarDays,
@@ -12,10 +12,12 @@ import {
   ChevronRight,
   ListTree
 } from "lucide-react";
-
+import api from "../../../src/Api";
 import "./tempdemploi.css";
 
 const weekDays = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+
+
 
 /* ===========================
       COMPONENT
@@ -24,8 +26,18 @@ const ScheduleCalendar = ({ timetable }) => {
  
   const [currentDay, setCurrentDay] = useState(0); // 0 = lundi
   const [mode, setMode] = useState("day"); // "day" | "week"
+   const [dataa , setdata] = useState([])
 
- 
+ const dataappler  = () => {
+  api.get("/emplois")
+  .then((res) => {
+    setdata(res.data)
+   alert(" tout sa passe bien ")
+  })
+  .catch(err => 
+    alert(" irroner avec ",err));
+  
+}
 
   // Filter by selected day
   const todayCourses = timetable.filter((c) => c.dayIndex === currentDay);
@@ -34,14 +46,24 @@ const ScheduleCalendar = ({ timetable }) => {
 
     
     <div className="calendar-card">
-
+  <button onClick={()=> {
+          dataappler
+        
+        }}> appler  </button>
       {/* Header */}
       <div className="calendar-header" >
         <CalendarDays size={26} />
         <h2>Emploi du Temps</h2>
 
-     
+      
       </div>
+
+      {dataa && dataa.map((e)=> {
+            
+            <pre>
+              {e.jour}  - {e.class}
+            </pre>
+      }) }
 
       {/* Mode selector */}
       <div className="mode-switch">
@@ -49,7 +71,7 @@ const ScheduleCalendar = ({ timetable }) => {
           className={mode === "day" ? "active" : ""}
           onClick={() => setMode("day")}
         >
-          Jour
+         Jour
         </button>
 
         <button

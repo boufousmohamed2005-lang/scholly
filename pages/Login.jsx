@@ -1,50 +1,59 @@
-
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import { GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
+import api from "../src/Api"; // ton axios configuré
+import useAuth from "../src/hook/Usehook";
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
+  const { setUser } = useAuth(); // hook global pour mettre l'user
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [userRole, setUserRole] = useState("directeur");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setMessage(null);
 
-    // Validation basique
     if (!formData.email || !formData.password) {
       setMessage({ type: "error", text: "Veuillez remplir tous les champs" });
-      setIsLoading(false);
       return;
     }
 
-    // Simuler une requête d'authentification
-    
+    setIsLoading(true);
 
-    // Sauvegarder le rôle dans localStorage
-    localStorage.setItem("userRole", userRole);
-    
+    try {
+      // Appel API login
+      const res = await api.post("/login", {
+        email: formData.email,
+        password: formData.password,
+      });
 
-    // Simuler délai API
-    setTimeout(() => {
-      setIsLoading(false);
+      // Stocker token dans sessionStorage
+      sessionStorage.setItem("token", res.data.access_token);
+
+      // Mettre token dans axios par défaut
+      api.defaults.headers.common["Authorization"] = `Bearer ${res.data.access_token}`;
+
+      // Mettre l'utilisateur dans le hook global
+      setUser(res.data.user);
+
+      // Stocker le rôle choisi (optionnel)
+      sessionStorage.setItem("userRole", userRole);
+
       setMessage({ type: "success", text: "Connexion réussie !" });
-      
-      // Rediriger vers le dashboard après 1.5s
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1500);
-    }, 1000);
+
+      // Redirection vers le dashboard
+      navigate("/dashboard");
+    } catch (err) {
+      console.error(err);
+      setMessage({ type: "error", text: "Identifiants invalides" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,13 +66,12 @@ export default function Login() {
           <div className="card-header-lo">
             <div className="icon-circle"><GraduationCap size={40} /></div>
             <h2 className="card-title">Connexion</h2>
-            <br />
             <p className="card-description">Connectez-vous à votre compte Schoolly</p>
           </div>
 
           {/* Sélecteur de rôle pour test */}
           <div className="role-test-selector">
-            <label>Rôle de test:</label>
+            <label>Rôle de test :</label>
             <div className="role-buttons">
               {["student", "professor", "directeur"].map((role) => (
                 <button
@@ -123,4 +131,3 @@ export default function Login() {
     </div>
   );
 }
-

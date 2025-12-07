@@ -1,47 +1,82 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, School, ChevronDown } from "lucide-react";
 import "./courses.css";
+import api from "../../src/Api";
 
 
 
-export default function CoursesPage({role}) {
+
+
+export default function CoursesPage({role,setcour}) {
   const [subjects, setSubjects] = useState([]);
   const [filteredSubjects, setFilteredSubjects] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
-  const [formData, setFormData] = useState({ name: "", code: "", description: "" });
- const [supp, setSupp] = useState();
+  const [formData, setFormData] = useState({ Nom: "", Code: "", Description: "" });
+ const [loading,setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
 
   useEffect(() => {
+    api.get("/cours")
+      .then(res => {setSubjects(res.data)
+        setLoading(false);
+      })
+      .catch(err => console.error(err));
+  }, [subjects]);
+setcour(subjects)
+  /*useEffect(() => {
+    const storedSubjects = JSON.parse(localStorage.getItem("subjects") || "[]");
+    setSubjects(storedSubjects.length ? storedSubjects : defaultSubjects);
+  }, []);*/
 
-    // api ici 
-    const storedSubjects = [ { id: "1", code: "MATH101", name: "Mathématiques", description: "Cours de maths de base" },
-       { id: "2", code: "M101", name: "Mathématiques", description: "Cours de maths de base" },
-        { id: "3", code: "M101", name: "Mathématiques", description: "Cours de maths de base" }
-     
-    ]
-    setSubjects(storedSubjects.length ? storedSubjects :null);
-  }, []);
-
-  useEffect(() => {
+  /*useEffect(() => {
     handleSearch(searchQuery);
-  }, );
+  }, );*/
+ 
+
 
   const handleOpenDialog = (subject) => {
     if (subject) {
       setEditingSubject(subject);
-      setFormData({ name: subject.name, code: subject.code, description: subject.description });
+      setFormData({
+        Nom: subject.Nom,
+        Code: subject.Code,
+        Description: subject.Description
+      });
+
     } else {
       setEditingSubject(null);
-      setFormData({ name: "", code: "", description: "" });
+      setFormData({ Nom: "", Code: "", Description: "" });
     }
     setIsDialogOpen(true);
   };
-
+/////
   const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editingSubject) {
+      // تعديل مادة موجودة
+      api.put(`/cours/${editingSubject.id}`, formData)
+        .then(res => {
+          setSubjects(subjects.map(s => s.id === res.data.id ? res.data : s));
+          setLoading(false);
+          setIsDialogOpen(false);
+        })
+        .catch(err => alert(err));
+    } else {
+      // إضافة مادة جديدة
+      api.post("/cours", formData)
+        .then(res => {
+          setSubjects([...subjects, res.data]);
+         setLoading(false);
+          setIsDialogOpen(false);
+        })
+        .catch(err => console.error(err));
+    }
+  };
+  
+  /*const handleSubmit = (e) => {
     e.preventDefault();
     let updatedSubjects;
     if (editingSubject) {
@@ -52,16 +87,15 @@ export default function CoursesPage({role}) {
       updatedSubjects = [...subjects, { id: Date.now().toString(), ...formData }];
     }
     setSubjects(updatedSubjects);
-   
+    localStorage.setItem("subjects", JSON.stringify(updatedSubjects));
     setIsDialogOpen(false);
-  };
+  };*/
 
   const handleDelete = (id) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer cette matière ?")) {
       const updatedSubjects = subjects.filter((s) => s.id !== id);
-      //const deleteobje = subjects.filter((s) => s.id == id)
       setSubjects(updatedSubjects);
-       setSupp( e =>[...e , subjects.filter((s) => s.id == id)])
+      
     }
   };
 
@@ -69,8 +103,8 @@ export default function CoursesPage({role}) {
     setSearchQuery(query);
     const filtered = subjects.filter(
       (s) =>
-        s.name.toLowerCase().includes(query.toLowerCase()) ||
-        s.code.toLowerCase().includes(query.toLowerCase())
+        s.Nom.toLowerCase().includes(query.toLowerCase()) ||
+        s.Code.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredSubjects(filtered);
   };
@@ -84,7 +118,9 @@ export default function CoursesPage({role}) {
     );
     setFilteredSubjects(sorted);
   };
-
+ useEffect(() => {
+    handleSearch(searchQuery);
+  }, [subjects, searchQuery]);
   const displayedSubjects = filteredSubjects.length ? filteredSubjects : subjects;
 
   // Statistiques
@@ -92,9 +128,17 @@ export default function CoursesPage({role}) {
   const totalEnrollment = subjects.length * 10; // Exemple simple
   const avgCapacity = subjects.length ? Math.floor((totalEnrollment / (subjects.length * 10)) * 100) : 0;
   const fullCourses = subjects.length ? 1 : 0; // Exemple simple
-
+if (loading) {
+  return <div className="loader-container">
+          <div className="loader-dot"></div>
+          <div className="loader-dot"></div>
+          <div className="loader-dot"></div>
+        </div>
+}
   return (
-    <div className={`courses-page theme`}>
+    <div  className={`courses-page }`}>
+      
+      
      { role == "student" ? null : <div className="header">
         <div>
           <h1>Gestion des matières</h1>
@@ -127,7 +171,7 @@ export default function CoursesPage({role}) {
           <h3>Avg Capacity</h3>
           <p>{avgCapacity}%</p>
           <div className="progress-bar">
-            <div className="progress-fill progress-warning" style={{ width: `${avgCapacity}%` }}></div>
+            <div className="progress-fill progress-warning" style={{ width:`${avgCapacity}% `}}></div>
           </div>
         </div>
         <div className="card-stats">
@@ -165,9 +209,9 @@ export default function CoursesPage({role}) {
               {displayedSubjects.length > 0 ? (
                 displayedSubjects.map((subject) => (
                   <tr key={subject.id}>
-                    <td>{subject.code}</td>
-                    <td>{subject.name}</td>
-                    <td>{subject.description}</td>
+                     <td>{subject.Code}</td>
+                    <td>{subject.Nom}</td>
+                    <td>{subject.Description}</td>
                   { role == "student"? null  : <td>
                       <button className="btn-icon edit" onClick={() => handleOpenDialog(subject)}><Pencil size={16} /></button>
                       <button className="btn-icon delete" onClick={() => handleDelete(subject.id)}><Trash2 size={16} /></button>
@@ -181,19 +225,6 @@ export default function CoursesPage({role}) {
               )}
             </tbody>
           </table>
-
-          {supp.length > 0 &&  supp.map( (subject) => {
-            return (
-              <pre key={subject.id}>
-              
-                    {subject.code}
-                    {subject.name}
-                  {subject.description}
-              </pre>
-            )
-          }
-
-          )}
         </div>
       </div>
 
@@ -203,7 +234,30 @@ export default function CoursesPage({role}) {
           <div className="modal">
             <h3>{editingSubject ? "Modifier la matière" : "Ajouter une matière"}</h3>
             <form onSubmit={handleSubmit}>
-              <input
+
+            <input
+  type="text"
+  placeholder="Code de la matière"
+  value={formData.Code}
+  onChange={(e) => setFormData({ ...formData, Code: e.target.value })}
+  required
+/>
+<input
+  type="text"
+  placeholder="Nom de la matière"
+  value={formData.Nom}
+  onChange={(e) => setFormData({ ...formData, Nom: e.target.value })}
+  required
+/>
+<input
+  type="text"
+  placeholder="Description"
+  value={formData.Description}
+  onChange={(e) => setFormData({ ...formData, Description: e.target.value })}
+  required
+/>
+
+              {/*<input
                 type="text"
                 placeholder="Code de la matière"
                 value={formData.code}
@@ -223,7 +277,8 @@ export default function CoursesPage({role}) {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 required
-              />
+              />*/}
+
               <div className="modal-actions">
                 <button type="button" className="btn-outline" onClick={() => setIsDialogOpen(false)}>Annuler</button>
                 <button type="submit" className="btn-primary">{editingSubject ? "Modifier" : "Ajouter"}</button>

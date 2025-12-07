@@ -9,19 +9,42 @@ import {
   X,
 User2
 } from "lucide-react";
+import api from "../../src/Api";
 import "./teachers.css";
 
-const TeacherPage = ({darkMode,role ,teachers,setTeachers}) => {
+const TeacherPage = ({darkMode,role,setTeachers }) => {
+const [loading, setLoading] = useState(true);
+  const [teachers,setTeacherss] = useState([])
+   // البداية فارغة
+        
+  useEffect(() => {
+      api.get('/professeurs') // استدعاء API من Laravel
+        .then(response => {
+          setTeacherss(response.data)
+          
+        setLoading(true)
+      }
+      )
+        .catch(error => console.error(error))
+        .finally(() => setLoading(false));
 
 
+  }, [teachers,setTeacherss]);
+  setTeachers(teachers);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTeachers, setFilteredTeachers] = useState(teachers);
   const [showModal, setShowModal] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState(null);
   const [newTeacher, setNewTeacher] = useState({
-    id: "", name: "", email: "", salary: "", experience: "", department: "", subject: ""
+    name:"", email:"", salary:"", experience:"", department:"", subject:""
   });
-
+ 
+  // -------------------------------
+  // تحديث filteredTeachers عند وصول بيانات جديدة
+  // -------------------------------
+  useEffect(() => {
+    setFilteredTeachers(teachers);
+  }, [teachers]);
 
   // -------------------------------
   // Dark mode toggle
@@ -39,72 +62,134 @@ const TeacherPage = ({darkMode,role ,teachers,setTeachers}) => {
   // -------------------------------
   useEffect(() => {
     const result = teachers.filter((t) =>
-      t.name.toLowerCase().includes(searchTerm.toLowerCase())
+      t.Name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredTeachers(result);
   }, [searchTerm, teachers]);
-
+  
   // -------------------------------
   // Delete
   // -------------------------------
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this teacher?")) {
-      setTeachers(teachers.filter((t) => t.id !== id));
+      try {
+           await  api.delete(`/professeurs/${id}`)
+            setTeachers(teachers.filter((s) => s.id !== id));
+           
+           } catch (err) {
+             alert("Impossible de supprimer l'étudiant ! " + err.message);
+           }
+      
     }
   };
 
   // -------------------------------
   // Add or Edit Teacher
   // -------------------------------
-  const handleSubmitTeacher = (e) => {
-    e.preventDefault();
-    if (!newTeacher.name || !newTeacher.email) {
-      alert("Please fill in all required fields.");
-      return;
-    }
 
-    if (editingTeacher) {
-      // Editing existing teacher
-      setTeachers(teachers.map(t => t.id === editingTeacher.id ? { ...newTeacher, id: editingTeacher.id, salary: parseFloat(newTeacher.salary), experience: parseInt(newTeacher.experience) } : t));
-    } else {
-      // Adding new teacher
-      const id = "TEA" + String(teachers.length + 1).padStart(3, "0");
-      const teacher = { ...newTeacher, id, salary: parseFloat(newTeacher.salary), experience: parseInt(newTeacher.experience) };
-      setTeachers([...teachers, teacher]);
-    }
+  // Add new teacher
+  
+const handleSubmitTeacher = (e) => {
+  e.preventDefault();
 
-    setNewTeacher({ id: "", name: "", email: "", salary: "", experience: "", department: "", subject: "" });
-    setEditingTeacher(null);
-    setShowModal(false);
-  };
+  if (editingTeacher) {
+ 
+    // Editing
+    api.put(`/professeurs/${editingTeacher.id}`, {
+        Name: newTeacher.name,
+            Email: newTeacher.email,
+            Salary: parseFloat(newTeacher.salary),
+            Experience: parseInt(newTeacher.experience),
+            Department: newTeacher.department,
+            Subject: newTeacher.subject
+    });
+    // setTeachers(teachers.map(t =>
+    //   t.id === editingTeacher.id
+    //     ? {
+    //         ...t,
+    //         Name: newTeacher.name,
+    //         Email: newTeacher.email,
+    //         Salary: parseFloat(newTeacher.salary),
+    //         Experience: parseInt(newTeacher.experience),
+    //         Department: newTeacher.department,
+    //         Subject: newTeacher.subject
+    //       }
+    //     : t
+    // ));
+  } else {
+    // Adding NEW teacher
+ 
+      api.post('/professeurs',{
+         Name: newTeacher.name,
+            Email: newTeacher.email,
+            Salary: parseFloat(newTeacher.salary),
+            Experience: parseInt(newTeacher.experience),
+            Department: newTeacher.department,
+            Subject: newTeacher.subject
+      }) // استدعاء API من Laravel
+        .then((rse) =>{ rse 
+          setLoading(true)
+        }  )
+      .catch(error => alert(error));
 
+
+
+  }
+
+ 
+  setNewTeacher({
+    name: "",
+    email: "",
+    salary: "",
+    experience: "",
+    department: "",
+    subject: ""
+  });
+
+  setShowModal(false);
+};
+
+
+ 
   // -------------------------------
   // Edit teacher
   // -------------------------------
+
+  
   const handleEdit = (teacher) => {
     setEditingTeacher(teacher);
     setNewTeacher({
-      name: teacher.name,
-      email: teacher.email,
-      salary: teacher.salary,
-      experience: teacher.experience,
-      department: teacher.department,
-      subject: teacher.subject,
+      name: teacher.Name,
+      email: teacher.Email,
+      salary: teacher.Salary,
+      experience: teacher.Experience,
+      department: teacher.Department,
+      subject: teacher.Subject,
     });
+    
     setShowModal(true);
   };
 
   // -------------------------------
   // Stats
   // -------------------------------
-  const avgSalary = (teachers.reduce((a, t) => a + t.salary, 0) / teachers.length).toFixed(0);
-  const avgExperience = (teachers.reduce((a, t) => a + t.experience, 0) / teachers.length).toFixed(1);
+  const avgSalary = (teachers.reduce((a, t) => a + t.Salary, 0) / teachers.length).toFixed(0);
+  const avgExperience = (teachers.reduce((a, t) => a + t.Experience, 0) / teachers.length).toFixed(1);
 
   // -------------------------------
   // Render
   // -------------------------------
   return (
-    <div className="teacher-page">
+    
+     
+    <div  className={`teacher-page ${loading ? "loading-active" : ""}`}>
+       {loading && (
+        <div className="loader-container">
+          <div className="loader-dot"></div>
+          <div className="loader-dot"></div>
+          <div className="loader-dot"></div>
+        </div>
+      )}
       {/* HEADER */}
       { role == "student" ? null : <div className="header">
         <div>
@@ -177,12 +262,12 @@ const TeacherPage = ({darkMode,role ,teachers,setTeachers}) => {
             {filteredTeachers.map((t) => (
               <tr key={t.id}>
                 <td>{t.id}</td>
-                <td>{t.name}</td>
-                <td>{t.email}</td>
-                {  role == "student" ? null :  <td>${t.salary}</td>}
-               { role == "student" ? null :  <td>{t.experience} yrs</td>}
-                <td>{t.department}</td>
-                <td>{t.subject}</td>
+                <td>{t.Name}</td>
+                <td>{t.Email}</td>
+                {  role == "student" ? null :  <td>{t.Salary} DH </td>}
+               { role == "student" ? null :  <td>{t.Experience} yrs</td>}
+                <td>{t.Department}</td>
+                <td>{t.Subject}</td>
                { role == "student" ? null :  <td className="actions">
                   <button className="icon-btn edit" onClick={() => handleEdit(t)}>
                     <Pencil size={16} />
@@ -247,7 +332,7 @@ const TeacherPage = ({darkMode,role ,teachers,setTeachers}) => {
                 value={newTeacher.subject}
                 onChange={(e) => setNewTeacher({ ...newTeacher, subject: e.target.value })}
               />
-              <button type="submit" className="btn-primary full">{editingTeacher ? "Save Changes" : "Add Teacher"}</button>
+              <button type="submit"   className="btn-primary full">{editingTeacher ? "Save Changes" : "Add Teacher"}</button>
             </form>
           </div>
         </div>
@@ -255,5 +340,6 @@ const TeacherPage = ({darkMode,role ,teachers,setTeachers}) => {
     </div>
   );
 };
+
 
 export default TeacherPage;

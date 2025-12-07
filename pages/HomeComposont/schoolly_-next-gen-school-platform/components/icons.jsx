@@ -8,6 +8,7 @@ export {
   MapPin,
   CheckCircle2,
   ArrowRight,
+  BookCopyIcon,
   Sun,
   Moon,
   Menu,

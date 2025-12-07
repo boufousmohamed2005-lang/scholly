@@ -1,11 +1,11 @@
 import React from 'react';
-import { Users, BookOpen, Calendar, MapPin, BarChart3, GraduationCap } from './icons';
+import { Users, BookOpen, Calendar,BookCopyIcon, BarChart3, GraduationCap } from './icons';
 
 const features = [
   { icon: Users, title: "Gestion des étudiants", description: "Suivez toutes les informations de vos étudiants en temps réel." },
   { icon: BookOpen, title: "Gestion des professeurs", description: "Organisez votre corps enseignant facilement." },
   { icon: Calendar, title: "Emploi du temps", description: "Créez et gérez les emplois du temps et examens." },
-  { icon: MapPin, title: "Gestion des régions", description: "Organisez votre établissement par régions." },
+  { icon: BookCopyIcon, title: "Gestion des Cours", description: "Organisez votre établissement par régions." },
   { icon: BarChart3, title: "Tableaux de bord", description: "Visualisez toutes vos données avec des stats en temps réel." },
   { icon: GraduationCap, title: "Gestion des classes", description: "Créez et gérez vos classes et effectifs." },
 ];

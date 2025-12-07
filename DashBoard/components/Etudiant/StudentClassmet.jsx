@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from "react";
+
+import React, { useState,useEffect,useMemo } from "react";
+import Api from "../../../src/Api"
 import {
   Users,
   Search,
@@ -10,7 +12,8 @@ import {
   Star,
 } from "lucide-react";
 import "./studentsClassmet.css";
-
+import useAuthuser from "../../../src/hook/hookuser";
+//import useAuth from "../../../src/hook/Usehook";
 const getAvatar = (name) => {
   const letter = name.charAt(0).toUpperCase();
   const colors = ["#ff6b6b", "#6b8cff", "#3ddc97", "#f7b32b", "#be4bdb"];
@@ -18,10 +21,46 @@ const getAvatar = (name) => {
   return { letter, bg };
 };
 
-const ClassMatesTable = ({ className, students,darkMode }) => {
-  const [searchValue, setSearchValue] = useState("");
-  const [page, setPage] = useState(1);
+const ClassMatesTable = () => {
+//   const [searchValue, setSearchValue] = useState("");
+//   const [page, setPage] = useState(1);
+//  const [students,setStudents] = useState([]);
+
  
+//    const { user, loading } = useAuthuser();
+
+
+const [searchValue, setSearchValue] = useState("");
+  const [page, setPage] = useState(1);
+  const [students, setStudents] = useState([]);
+  const { user } = useAuthuser();
+  const [loading ,setLoading]=useState(true);
+    const [classs , setclasss] =useState();
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await Api.get("/etudiants");
+        
+        const etudiants = response.data;
+        const etudiant = etudiants.find((e) => e.Email === user.email);
+        if (etudiant) {
+          const classe = etudiant.Class;
+          setclasss(classe)
+          const camarades = etudiants.filter((e) => e.Class === classe && e.Email !== user.email);
+          setStudents(camarades);
+         setLoading(false)
+        }
+      } catch (error) {
+        console.error("Error loading data", error);
+
+      }
+    };
+    loadData();
+  }, [user]);
+ 
+
+
+
 
   const perPage = 5;
 
@@ -29,13 +68,13 @@ const ClassMatesTable = ({ className, students,darkMode }) => {
 
   //       SEARCH
 
-  const filteredStudents = useMemo(() => {
-    return students.filter((s) =>
-      `${s.nom} ${s.prenom} ${s.email} ${s.id}`
-        .toLowerCase()
-        .includes(searchValue.toLowerCase())
-    );
-  }, [students, searchValue]);
+ 
+
+const filteredStudents = useMemo(() => {
+  return students.filter((s) =>
+     `${s.Nom} ${s.Prenom} ${s.Email} ${s.id}`.toLowerCase().includes(searchValue.toLowerCase()) 
+  );
+}, [students, searchValue]);
 
  
   //       PAGINATION
@@ -45,16 +84,26 @@ const ClassMatesTable = ({ className, students,darkMode }) => {
     (page - 1) * perPage,
     page * perPage
   );
+if (loading) {
+  return <div className="loader-container">
+          <div className="loader-dot"></div>
+          <div className="loader-dot"></div>
+          <div className="loader-dot"></div>
+        </div>
+}
 
+
+  
   return (
-    <div className={darkMode ? "dark-mode-container" : "light-mode-container"}>
-     
-
+    <div className={`light-mode-container }`}>
+      
       <div className="glass-card wide">
         {/* HEADER */}
         <div className="glass-header">
           <Users size={26} />
-          <h2>Classe : {className}</h2>
+          <h2>Classe : {classs}</h2>
+       
+         
         </div>
 
         {/* STAT CARDS */}
@@ -77,7 +126,7 @@ const ClassMatesTable = ({ className, students,darkMode }) => {
           <Search size={18} className="search-icon" />
           <input
             type="text"
-            placeholder="Rechercher..."
+            placeholder="Rechercher par nom ,prenom ,email..."
             value={searchValue}
             onChange={(e) => {
               setSearchValue(e.target.value);
@@ -101,7 +150,7 @@ const ClassMatesTable = ({ className, students,darkMode }) => {
             <tbody>
               {paginatedStudents.length > 0 ? (
                 paginatedStudents.map((student) => {
-                  const avatar = getAvatar(student.nom);
+                  const avatar = getAvatar(student.Nom);
                   return (
                     <tr key={student.id}>
                       <td>
@@ -114,9 +163,9 @@ const ClassMatesTable = ({ className, students,darkMode }) => {
                       </td>
                       <td>{student.id}</td>
                       <td>
-                        {student.nom} {student.prenom}
+                        {student.Nom} {student.Prenom}
                       </td>
-                      <td>{student.email}</td>
+                      <td>{student.Email}</td>
                     </tr>
                   );
                 })

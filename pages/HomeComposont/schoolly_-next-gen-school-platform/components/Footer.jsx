@@ -17,26 +17,24 @@ const Footer = () => {
             <h4 className="footer-heading">Produit</h4>
             <ul className="footer-links">
               <li><a href="#features">Fonctionnalités</a></li>
-              <li><a href="#pricing">Tarifs</a></li>
-              <li><a href="#">Documentation</a></li>
+              <li><a href="##benefits">Avantages</a></li>
+                
+              
             </ul>
           </div>
           <div className="footer-column">
-            <h4 className="footer-heading">Entreprise</h4>
+            <h4 className="footer-heading">App</h4>
             <ul className="footer-links">
-              <li><a href="#">À propos</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Blog</a></li>
+              <li><a href="/signup ">Crée account </a></li>
+              <li> <a href="/login" >
+                 Connexion
+            </a></li>
+
+        
             </ul>
           </div>
-          <div className="footer-column">
-            <h4 className="footer-heading">Légal</h4>
-            <ul className="footer-links">
-              <li><a href="#">Confidentialité</a></li>
-              <li><a href="#">Conditions</a></li>
-              <li><a href="#">Cookies</a></li>
-            </ul>
-          </div>
+          
+          
         </div>
         <div className="footer-copyright">
           &copy; {new Date().getFullYear()} Schoolly. Tous droits réservés.

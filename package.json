@@ -38,10 +38,16 @@
   "axios": "^1.13.2",
   
     
+  "framer-motion": "^12.23.25",
+  
+    
   "hamburger-react": "^2.5.2",
   
     
   "lucide-react": "^0.546.0",
+  
+    
+  "motion": "^12.23.25",
   
     
   "react": "^19.1.1",

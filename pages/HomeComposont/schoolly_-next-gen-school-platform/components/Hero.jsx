@@ -23,7 +23,9 @@ const Hero = () => {
           <a href="/signup" className="btn btn-primary">
             Essai maintenent <ArrowRight height={20} width={20} />
           </a>
-          <a href="#features" className="btn btn-secondary">
+          <a href="#features" onClick={()=>{
+            document.querySelector(".header_home").style.position = "relative";
+          } }  className="btn btn-secondary">
             Découvrir les fonctionnalités
           </a>
         </div>

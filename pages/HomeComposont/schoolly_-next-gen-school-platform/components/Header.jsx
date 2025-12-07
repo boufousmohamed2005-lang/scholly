@@ -29,7 +29,10 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               document.querySelector(".header_home").style.position = "relative";
               
             } }>functions </a>
-            <a href="#benefits">Avantages</a>
+            <a href="#benefits"  onClick={()=>{
+              document.querySelector(".header_home").style.position = "relative";
+              
+            } } >Avantages</a>
             
           </nav>
            
@@ -57,23 +60,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
         </div>
       </div>
       
-      {/* <div
-        className={`mobile-nav-backdrop ${isMenuOpen ? 'open' : ''}`}
-        onClick={() => setIsMenuOpen(false)}
-        aria-hidden="true"
-      />
-      
-      <div className={`mobile-nav ${isMenuOpen ? 'open' : ''}`}>
-        <nav>
-          <a href="#features" onClick={() => setIsMenuOpen(false)}>Fonctionnalités</a>
-          <a href="#benefits" onClick={() => setIsMenuOpen(false)}>Avantages</a>
-          <a href="#" className="btn btn-ghost">Connexion</a>
-           <a href="#" className="btn btn-primary">
-              Commencer <ArrowRight height={16} width={16} />
-            </a>
-        </nav>
-       
-      </div> */}
+     
       {/* Backdrop */}
 <div
   className={`mobile-nav-backdrop ${isMenuOpen ? 'open' : ''}`}
@@ -88,10 +75,14 @@ const Header = ({ darkMode, toggleDarkMode }) => {
     <a href="#features" onClick={() => setIsMenuOpen(false)}>Fonctionnalités</a>
     <a href="#benefits" onClick={() => setIsMenuOpen(false)}>Avantages</a>
 
-    <a href="#" className="btn btn-ghost">Connexion</a>
+    {/* <a href="#" className="btn btn-ghost">Connexion</a>
     <a href="#" className="btn btn-primary">
       Commencer <ArrowRight height={16} width={16} />
-    </a>
+    </a> */}
+    <a href="/signup " className="btn btn-ghost">Connexion</a>
+            <a href="/login" className="btn btn-primary">
+              Commencer <ArrowRight height={16} width={16} />
+            </a>
   </nav>
 </div>
 

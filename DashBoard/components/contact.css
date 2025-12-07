@@ -114,3 +114,10 @@ align-items: center;
   from { opacity: 0; transform: translateY(-15px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* .reclamations-wrapper { padding: 20px; max-width: 800px; margin: auto; }
+.contact-card { border: 1px solid #ccc; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+.responses { margin-top: 10px; padding-left: 10px; }
+.response-card { background: #f0f0f0; border-radius: 5px; padding: 5px 10px; margin-bottom: 5px; }
+.reply-box { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.reply-box textarea { width: 100%; min-height: 50px; padding: 5px; border-radius: 5px; }
+.reply-box button { width: 120px; padding: 5px; border-radius: 5px; background: #007bff; color: #fff; border: none; cursor: pointer; } */

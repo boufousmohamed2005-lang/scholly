@@ -1,122 +1,167 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import api from "../../src/Api";
+import { Send, MessageSquare, Reply, PlusCircle } from "lucide-react";
+
 import "./contact.css";
 
-export default function ContactSupport() {
-  const [form, setForm] = useState({
-    fullname: "",
-    email: "",
-    subject: "",
+export default function Reclamations({user}) {
+ // ⭐ utilisateur connecté
+  const [contacts, setContacts] = useState([]);
+  const [replyMsg, setReplyMsg] = useState({});
+  const [loadingReplies, setLoadingReplies] = useState({});
+  const [newRec, setNewRec] = useState({
+    sujet: "",
     message: "",
   });
 
-  const [errors, setErrors] = useState({});
-  const [sent, setSent] = useState(false);
+  useEffect(() => {
+    fetchContacts();
+  }, []);
 
-  const validate = () => {
-    let e = {};
+  // 🔵 GET — Récupérer réclamations de l’utilisateur connecté uniquement
+  const fetchContacts = async () => {
+    try {
+      const res = await api.get("/contacts");
 
-    if (!form.fullname.trim()) e.fullname = "Nom obligatoire";
-    if (!form.email.includes("@") || form.email.length < 5)
-      e.email = "Email invalide";
-    if (form.subject.trim().length < 3)
-      e.subject = "Sujet trop court (min. 3 caractères)";
-    if (form.message.trim().length < 10)
-      e.message = "Message trop court (min. 10 caractères)";
+      // ⭐ Filtrer seulement ce qui appartient à l'utilisateur
+      const filtered = res.data.filter((c) => c.user_id === user.id);
+      setContacts(filtered);
 
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la récupération des réclamations");
+    }
   };
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validate()) return;
+  // 🔵 GET — réponses pour une réclamation
+  const fetchReplies = async (contactId) => {
+    setLoadingReplies((prev) => ({ ...prev, [contactId]: true }));
 
     try {
-      await axios.post("http://localhost:8000/api/contact", form);
-
-      setSent(true);
-      setForm({ fullname: "", email: "", subject: "", message: "" });
-
-      setTimeout(() => setSent(false), 3500);
+      const res = await api.get(`/contacts/${contactId}/replies`);
+      setContacts((prev) =>
+        prev.map((c) => (c.id === contactId ? { ...c, responses: res.data } : c))
+      );
     } catch (err) {
-      alert("Erreur lors de l'envoi !"+  err.message);
+      console.error(err);
+    } finally {
+      setLoadingReplies((prev) => ({ ...prev, [contactId]: false }));
+    }
+  };
+
+  // 🔵 POST — envoyer une réponse
+  const sendReply = async (contactId) => {
+    if (!replyMsg[contactId]) return alert("Écrivez votre réponse !");
+    try {
+      await api.post(`/contacts/${contactId}/reply`, {
+        replied_by: user.role || "Utilisateur",
+        message: replyMsg[contactId],
+      });
+
+      setReplyMsg((prev) => ({ ...prev, [contactId]: "" }));
+      fetchReplies(contactId);
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'envoi");
+    }
+  };
+
+  // 🔵 POST — nouvelle réclamation
+  const sendNewReclamation = async () => {
+    if (!newRec.sujet || !newRec.message)
+      return alert("Veuillez remplir tous les champs.");
+
+    try {
+      await api.post("/contacts", {
+        ...newRec,
+        user_id: user.id,         // ⭐ association à l'utilisateur
+        name: user.name,
+        email: user.email,
+      });
+
+      setNewRec({ sujet: "", message: "" });
+      fetchContacts();
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l’envoi de la réclamation");
     }
   };
 
   return (
-    <div className="contact-wrapper">
-      <div className="contact-card">
+    <div className="reclamations-wrapper">
 
-        <h2 className="title2">Déclarer votre  Problème</h2>
-        <p className="subtitle">
-          Nous sommes là pour vous aider. Décrivez votre problème.
-        </p>
+      {/* 📌 Formulaire nouvelle réclamation */}
+      <div className="new-rec-card">
+        <h3><PlusCircle size={18}/> Nouvelle réclamation</h3>
 
-        {sent && <div className="success-msg">✔ Message envoyé avec succès !</div>}
+        <input
+          type="text"
+          placeholder="Sujet"
+          value={newRec.sujet}
+          onChange={(e) => setNewRec({ ...newRec, sujet: e.target.value })}
+        />
 
-        <form onSubmit={handleSubmit} className="form">
+        <textarea
+          placeholder="Votre message..."
+          value={newRec.message}
+          onChange={(e) => setNewRec({ ...newRec, message: e.target.value })}
+        />
 
-          {/* NOM */}
-          <div className="form-group">
-            <label>Nom complet</label>
-            <input
-              type="text"
-              name="fullname"
-              value={form.fullname}
-              onChange={handleChange}
-              className={errors.fullname ? "error-input" : ""}
-            />
-            {errors.fullname && <small className="error-text">{errors.fullname}</small>}
-          </div>
-
-          {/* EMAIL */}
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              className={errors.email ? "error-input" : ""}
-            />
-            {errors.email && <small className="error-text">{errors.email}</small>}
-          </div>
-
-          {/* SUJET */}
-          <div className="form-group">
-            <label>Sujet</label>
-            <input
-              type="text"
-              name="subject"
-              value={form.subject}
-              onChange={handleChange}
-              className={errors.subject ? "error-input" : ""}
-            />
-            {errors.subject && <small className="error-text">{errors.subject}</small>}
-          </div>
-
-          {/* MESSAGE */}
-          <div className="form-group">
-            <label>Message</label>
-            <textarea
-              name="message"
-              rows="5"
-              value={form.message}
-              onChange={handleChange}
-              className={errors.message ? "error-input" : ""}
-            ></textarea>
-            {errors.message && <small className="error-text">{errors.message}</small>}
-          </div>
-
-          <button className="btn-submit">Envoyer</button>
-        </form>
+        <button className="send-btn" onClick={sendNewReclamation}>
+          <Send size={16} /> Envoyer
+        </button>
       </div>
+
+      <hr />
+
+      {/* 📌 Liste des réclamations */}
+      {contacts.length === 0 && (
+        <p style={{ opacity: 0.6 }}>
+          Aucune réclamation pour le moment.
+        </p>
+      )}
+
+      {contacts.map((c) => (
+        <div key={c.id} className="contact-card">
+          <h4><MessageSquare size={16}/> {c.sujet}</h4>
+          <p><strong>Message :</strong> {c.message}</p>
+
+          <button
+            onClick={() => fetchReplies(c.id)}
+            disabled={loadingReplies[c.id]}
+          >
+            {loadingReplies[c.id] ? "Chargement..." : "Voir les réponses"}
+          </button>
+
+          <div className="responses">
+            {c.responses?.length > 0 ? (
+              c.responses.map((r) => (
+                <div key={r.id} className="response-card">
+                  <strong><Reply size={14}/> {r.replied_by} :</strong> {r.message}
+                  <small>
+                    {new Date(r.created_at).toLocaleString()}
+                  </small>
+                </div>
+              ))
+            ) : (
+              <small>Aucune réponse</small>
+            )}
+          </div>
+
+          <div className="reply-box">
+            <textarea
+              placeholder="Répondre..."
+              value={replyMsg[c.id] || ""}
+              onChange={(e) =>
+                setReplyMsg((prev) => ({ ...prev, [c.id]: e.target.value }))
+              }
+            />
+            <button onClick={() => sendReply(c.id)}>
+              <Send size={14}/> Répondre
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
