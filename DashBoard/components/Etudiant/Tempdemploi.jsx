@@ -1,127 +1,117 @@
-import React, {  useState } from "react";
-import {
-  Calendar,
-  CalendarDays,
-  Clock,
-  BookOpen,
-  User,
-  MapPin,
-  Sun,
-  Moon,
-  ChevronLeft,
-  ChevronRight,
-  ListTree
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { CalendarDays, Clock, BookOpen, User, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import api from "../../../src/Api";
 import "./tempdemploi.css";
 
 const weekDays = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
+const ScheduleCalendar = ({ userid }) => {
+  const [currentDay, setCurrentDay] = useState(0);
+  const [mode, setMode] = useState("day");
+  const [timetable, setTimetable] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [etudiant, setEtudiant] = useState([]);
+  const [todayCourses, setTodayCourses] = useState([]);
+  const [weekCourses, setWeekCourses] = useState({});
 
+  const fetchTimetable = async () => {
+    setLoading(true);
+    try {
+      const userClassResponse = await api.get(`/etudiants`);
+      const etudiantData = userClassResponse.data.filter((e) => e.user_id == userid);
+      setEtudiant(etudiantData);
+      const res = await api.get("/emplois", {
+        params: { id: userid }
+      });
+      setTimetable(res.data);
+    } catch (err) {
+      console.error("Erreur chargement emploi :", err);
+      alert("Erreur lors du chargement de l'emploi du temps.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-/* ===========================
-      COMPONENT
-=========================== */
-const ScheduleCalendar = ({ timetable }) => {
- 
-  const [currentDay, setCurrentDay] = useState(0); // 0 = lundi
-  const [mode, setMode] = useState("day"); // "day" | "week"
-   const [dataa , setdata] = useState([])
+  useEffect(() => {
+    fetchTimetable();
+  }, []);
 
- const dataappler  = () => {
-  api.get("/emplois")
-  .then((res) => {
-    setdata(res.data)
-   alert(" tout sa passe bien ")
-  })
-  .catch(err => 
-    alert(" irroner avec ",err));
-  
-}
+  useEffect(() => {
+    if (etudiant.length > 0 && timetable.length > 0) {
+      const todayCoursesData = timetable.filter(
+        (c) => c.jour.toLowerCase() === weekDays[currentDay].toLowerCase() && c.class === etudiant[0].Class
+      );
+      setTodayCourses(todayCoursesData);
 
-  // Filter by selected day
-  const todayCourses = timetable.filter((c) => c.dayIndex === currentDay);
+      const weekCoursesData = {};
+      weekDays.forEach((day) => {
+        weekCoursesData[day] = timetable.filter(
+          (c) => c.jour.toLowerCase() === day.toLowerCase() && c.class === etudiant[0].Class
+        );
+      });
+      setWeekCourses(weekCoursesData);
+    }
+  }, [etudiant, timetable, currentDay]);
+
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="loader-dot"></div>
+        <div className="loader-dot"></div>
+        <div className="loader-dot"></div>
+      </div>
+    );
+  }
 
   return (
-
-    
     <div className="calendar-card">
-  <button onClick={()=> {
-          dataappler
-        
-        }}> appler  </button>
       {/* Header */}
-      <div className="calendar-header" >
+      <div className="calendar-header">
         <CalendarDays size={26} />
+        {etudiant.length > 0 && etudiant[0].Class}
         <h2>Emploi du Temps</h2>
-
-      
       </div>
-
-      {dataa && dataa.map((e)=> {
-            
-            <pre>
-              {e.jour}  - {e.class}
-            </pre>
-      }) }
-
       {/* Mode selector */}
       <div className="mode-switch">
-        <button
-          className={mode === "day" ? "active" : ""}
-          onClick={() => setMode("day")}
-        >
-         Jour
+        <button className={mode === "day" ? "active" : ""} onClick={() => setMode("day")}>
+          Jour
         </button>
-
-        <button
-          className={mode === "week" ? "active" : ""}
-          onClick={() => setMode("week")}
-        >
+        <button className={mode === "week" ? "active" : ""} onClick={() => setMode("week")}>
           Semaine
         </button>
       </div>
-
-      {/* DAY MODE ------------------------------------------------- */}
+      {/* DAY MODE */}
       {mode === "day" && (
         <>
-          {/* Day Selector */}
           <div className="day-selector">
-            <button
-              onClick={() => setCurrentDay((p) => (p > 0 ? p - 1 : 5))}
-            >
+            <button onClick={() => setCurrentDay((p) => (p > 0 ? p - 1 : 5))}>
               <ChevronLeft size={20} />
             </button>
-
             <span>{weekDays[currentDay]}</span>
-
-            <button
-              onClick={() => setCurrentDay((p) => (p < 5 ? p + 1 : 0))}
-            >
+            <button onClick={() => setCurrentDay((p) => (p < 5 ? p + 1 : 0))}>
               <ChevronRight size={20} />
             </button>
           </div>
-
-          {/* Timeline (mobile-friendly) */}
           <div className="timeline">
             {todayCourses.length > 0 ? (
-              todayCourses.map((item, i) => (
-                <div className="timeline-item" key={i}>
+              todayCourses.map((item) => (
+                <div className="timeline-item" key={item.id}>
                   <div className="time-badge">
-                    <Clock size={16} /> {item.heure}
+                    <Clock size={16} />
+                    {(item.heure_debut).slice(0, 5)} - {(item.heure_fin).slice(0, 5)}
                   </div>
-
                   <div className="timeline-content">
                     <h4>
-                      <BookOpen size={16} /> {item.matiere}
+                      <BookOpen size={16} />
+                      {item.matiere || "-"}
                     </h4>
-
                     <p>
-                      <User size={16} /> {item.prof}
+                      <User size={16} />
+                      {item.professeur || "-"}
                     </p>
-
                     <p>
-                      <MapPin size={16} /> {item.salle}
+                      <MapPin size={16} />
+                      {item.class || "-"}
                     </p>
                   </div>
                 </div>
@@ -132,31 +122,30 @@ const ScheduleCalendar = ({ timetable }) => {
           </div>
         </>
       )}
-
-      {/* WEEK MODE ------------------------------------------------ */}
+      {/* WEEK MODE */}
       {mode === "week" && (
         <div className="week-view">
-          {weekDays.map((day, index) => {
-            const courses = timetable.filter((c) => c.dayIndex === index);
-
-            return (
-              <div className="week-column" key={index}>
-                <h3>{day}</h3>
-
-                {courses.length > 0 ? (
-                  courses.map((item, i) => (
-                    <div className="week-item" key={i}>
-                      <Clock size={16} /> {item.heure}
-                      <br />
-                      <span className="week-sub">{item.matiere}</span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="empty">—</p>
-                )}
-              </div>
-            );
-          })}
+          {Object.keys(weekCourses).map((day) => (
+            <div className="week-column" key={day}>
+              <h3>{day}</h3>
+              {weekCourses[day].length > 0 ? (
+                weekCourses[day].map((item) => (
+                  <div className="week-item" key={item.id}>
+                    <Clock size={16} />
+                    {item.heure_debut} - {item.heure_fin}
+                    <br />
+                    <span className="week-sub">{item.matiere || "-"}</span>
+                    <br />
+                    <span className="week-prof">{item.professeur || "-"}</span>
+                    <br />
+                    <span className="week-class">{item.class || "-"}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="empty">—</p>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

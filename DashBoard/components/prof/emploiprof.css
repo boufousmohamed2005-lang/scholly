@@ -1,0 +1,99 @@
+/* ------- Loader ------- */
+.loader-container-prof {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px;
+  color: #444;
+  font-size: 16px;
+}
+
+.loader-prof {
+  width: 45px;
+  height: 45px;
+  border: 5px solid #ddd;
+  border-top-color: #4a90e2;
+  border-radius: 50%;
+  animation: spin 300 linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ------- Page Wrapper ------- */
+.emploi-wrapper {
+  margin: 30px auto;
+  width: 90%;
+  max-width: 900px;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.65);
+  
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Fade animation */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.emploi-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1f3b73;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* ------- Table ------- */
+.table-container {
+  overflow-x: auto;
+}
+
+.emploi-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+}
+
+.emploi-table thead {
+  background-color: #0617fd;
+  color: rgb(10, 1, 1);
+}
+
+.emploi-table th,
+.emploi-table td {
+  padding: 14px;
+  text-align: left;
+}
+
+.emploi-table tbody tr {
+  transition: 0.2s ease;
+}
+
+.emploi-table tbody tr:nth-child(even) {
+  background: #f4f7fc;
+}
+
+.emploi-table tbody tr:hover {
+  background: #e6eefc;
+  transform: scale(1.01);
+}
+
+.empty-message {
+  text-align: center;
+  margin-top: 20px;
+  color: #888;
+  font-style: italic;
+}

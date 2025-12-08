@@ -31,23 +31,24 @@ const navItems = [
   { name: "Étudiants", icon: <GraduationCap size={20}/> },
   { name: "Professeurs", icon: <Users size={20}/> },
   { name: "Cours", icon: <BookOpen size={20}/> },
-  { name: "Regions", icon: <MapPin size={20}/> },
+  
   { name: "Emploi", icon: <Calendar size={20}/> },
-   { name: "Profile", icon: <Info size={20}/> },
+  
   { name: "Reclamation", icon: <BellElectricIcon size={20}/> },
   { name: "Saisie", icon: <Bell size={20}/> },
-   { name: "Paramètres", icon: <Settings size={20}/> },
+  
+  //  { name: "Paramètres", icon: <Settings size={20}/> },
   
 ]
 const navItemsetu = [
    { name: "Class", icon: <UserRound size={20}/> },
-  { name: "Emploie", icon: <CalendarDays size={20}/> },
+  { name: "Emploiee", icon: <CalendarDays size={20}/> },
   { name: "Profile", icon: <Info size={20}/> },
    { name: "Cours", icon: <BookOpen size={20}/> },
   { name: "Professeurs", icon: <FileText size={20}/> }, 
    { name: "Saisie", icon: <Bell size={20}/> },
   { name: "Contact", icon: <Contact2 size={20}/> },
-   { name: "Paramètres", icon: <Settings size={20}/> },
+  //  { name: "Paramètres", icon: <Settings size={20}/> },
 ]
 
 const navItemProf=[
@@ -58,9 +59,9 @@ const navItemProf=[
   { name: "Info", icon: <Info size={20}/> },
   { name: "Contact", icon: <Contact2 size={20}/> },
   { name: "Saisie", icon: <Bell size={20}/> },
-   { name: "Paramètres", icon: <Settings size={20}/> },
+  //  { name: "Paramètres", icon: <Settings size={20}/> },
 ]
-const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode,role }) => {
+const Sidebar = ({ activeItem, setActiveItem,role }) => {
   const [open, setOpen] = useState(true)
  
 
@@ -70,7 +71,7 @@ const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode,role }) =
     
 
       <aside className={`sidebar ${open ? "open" : ""}`}>
-        <h1 className="title"> <GraduationCap  size={39}  onClick={() => setOpen(!open)}  />  { open && "Schoolly"}  </h1>
+        <h1 className="title"> <GraduationCap  size={39}  onClick={() => setOpen(!open)}  />  <p style={{color:"blue"}}> { open && " Schoolly "} </p> </h1>
 
         <nav>
           <ul>
@@ -97,11 +98,8 @@ const Sidebar = ({ activeItem, setActiveItem, toggleDarkMode, darkMode,role }) =
         </nav>
 
         <div className="help-box">
-           <nav  onClick={toggleDarkMode}>
-        {darkMode ? <MoonIcon  color="black"  strokeWidth={3} size={16} /> :  <SunIcon size={20}   color="yellow" strokeWidth={3}  /> }
-        { open && "theme" }
-      </nav>
-      <br />
+         
+   
         
         <Link to="/" style={{color:"red"}} > <LogOut  size={20} color="red" strokeWidth={3} />  { open && "Logout" } </Link> 
         

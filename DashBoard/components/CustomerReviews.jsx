@@ -32,7 +32,7 @@ function CustomerReviews() {
 
   return (
     <div className="customer-reviews">
-      <h3>Customer Reviews</h3>
+      <h3>Customer Reviews   HHHHHHHHHH </h3>
       <ul>
         {reviews.map((review) => (
           <li key={review.id}>

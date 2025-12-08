@@ -1,167 +1,155 @@
-import { useState, useEffect } from "react";
-import api from "../../src/Api";
-import { Send, MessageSquare, Reply, PlusCircle } from "lucide-react";
-
-import "./contact.css";
-
-export default function Reclamations({user}) {
- // ⭐ utilisateur connecté
-  const [contacts, setContacts] = useState([]);
-  const [replyMsg, setReplyMsg] = useState({});
-  const [loadingReplies, setLoadingReplies] = useState({});
-  const [newRec, setNewRec] = useState({
-    sujet: "",
-    message: "",
-  });
+import React, { useState, useEffect } from "react";
+import { Send, Trash2 } from "lucide-react";
+import Api from "../../src/Api";
+import "./contactReclamation.css";
+// import useAuthuser  from "../../src/hook/hookuser";
+export default function Reclamation({ userId, role ,email }) {
+  const [reclamations, setReclamations] = useState([]);
+  const [newSujet, setNewSujet] = useState("");
+  const [newMessage, setNewMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  
+  // ---------------- FETCH RECLAMATIONS ----------------
+  const loadReclamations = async () => {
+    try {
+      const res = await Api.get("/contacts");
+      // Si rôle étudiant/professeur, filtrer seulement ses réclamations
+      if (role === "student" || role === "professeur") {
+        setReclamations(res.data.filter((r) => r.user_id === userId));
+      } else {
+        setReclamations(res.data); // Directeur voit tout
+      }
+    } catch (err) {
+      console.error("Erreur lors du chargement des réclamations :", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetchContacts();
+    loadReclamations();
   }, []);
 
-  // 🔵 GET — Récupérer réclamations de l’utilisateur connecté uniquement
-  const fetchContacts = async () => {
+  // ---------------- ADD RECLAMATION ----------------
+
+const handleAddReclamation = async () => {
+  if (!newSujet || !newMessage) return alert("Veuillez remplir tous les champs");
+  try {
+    console.log('Données envoyées :', {
+      name: role,
+      user_id: userId,
+      email: email,
+      sujet: newSujet,
+      message: newMessage,
+    });
+    const { data } = await Api.post("/contacts", {
+      name: role,
+      user_id: 1,
+      email: email,
+      sujet: newSujet,
+      message: newMessage,
+    });
+    console.log('Réponse de l\'API :', data);
+    setReclamations((prev) => [...prev, data]);
+    setNewSujet("");
+    setNewMessage("");
+  } catch (err) {
+    console.error("Erreur lors de l'ajout de la réclamation :", err.response?.data || err.message);
+    alert("Impossible d'ajouter la réclamation");
+  }
+};
+
+  // const handleAddReclamation = async () => {
+  //   if (!newSujet || !newMessage) return alert("Veuillez remplir tous les champs");
+
+  //   try {
+  //     //id	name	user_id	email	sujet	message	created_at	updated_at	
+  //     const { data } = await Api.post("/contacts", {
+  //       name: role, // peut être le nom de l'utilisateur
+  //       user_id: 1,
+  //       email: email, // optionnel si disponible
+  //       sujet: newSujet,
+  //       message: newMessage,
+        
+  //     });
+
+  //     setReclamations((prev) => [...prev, data]);
+  //     setNewSujet("");
+  //     setNewMessage("");
+  //   } catch (err) {
+  //     console.error("Erreur lors de l'ajout de la réclamation :", err.response?.data || err.message);
+  //     alert("Impossible d'ajouter la réclamation");
+  //   }
+  // };
+
+  // ---------------- DELETE RECLAMATION ----------------
+  const handleDeleteReclamation = async (id) => {
+    if (!window.confirm("Supprimer cette réclamation ?")) return;
+
     try {
-      const res = await api.get("/contacts");
-
-      // ⭐ Filtrer seulement ce qui appartient à l'utilisateur
-      const filtered = res.data.filter((c) => c.user_id === user.id);
-      setContacts(filtered);
-
+      await Api.delete(`/contacts/${id}`);
+      setReclamations((prev) => prev.filter((r) => r.id !== id));
     } catch (err) {
-      console.error(err);
-      alert("Erreur lors de la récupération des réclamations");
-    }
-  };
-
-  // 🔵 GET — réponses pour une réclamation
-  const fetchReplies = async (contactId) => {
-    setLoadingReplies((prev) => ({ ...prev, [contactId]: true }));
-
-    try {
-      const res = await api.get(`/contacts/${contactId}/replies`);
-      setContacts((prev) =>
-        prev.map((c) => (c.id === contactId ? { ...c, responses: res.data } : c))
-      );
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingReplies((prev) => ({ ...prev, [contactId]: false }));
-    }
-  };
-
-  // 🔵 POST — envoyer une réponse
-  const sendReply = async (contactId) => {
-    if (!replyMsg[contactId]) return alert("Écrivez votre réponse !");
-    try {
-      await api.post(`/contacts/${contactId}/reply`, {
-        replied_by: user.role || "Utilisateur",
-        message: replyMsg[contactId],
-      });
-
-      setReplyMsg((prev) => ({ ...prev, [contactId]: "" }));
-      fetchReplies(contactId);
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l'envoi");
-    }
-  };
-
-  // 🔵 POST — nouvelle réclamation
-  const sendNewReclamation = async () => {
-    if (!newRec.sujet || !newRec.message)
-      return alert("Veuillez remplir tous les champs.");
-
-    try {
-      await api.post("/contacts", {
-        ...newRec,
-        user_id: user.id,         // ⭐ association à l'utilisateur
-        name: user.name,
-        email: user.email,
-      });
-
-      setNewRec({ sujet: "", message: "" });
-      fetchContacts();
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l’envoi de la réclamation");
+      console.error("Erreur suppression :", err);
+      alert("Impossible de supprimer la réclamation");
     }
   };
 
   return (
-    <div className="reclamations-wrapper">
-
-      {/* 📌 Formulaire nouvelle réclamation */}
-      <div className="new-rec-card">
-        <h3><PlusCircle size={18}/> Nouvelle réclamation</h3>
-
-        <input
-          type="text"
-          placeholder="Sujet"
-          value={newRec.sujet}
-          onChange={(e) => setNewRec({ ...newRec, sujet: e.target.value })}
-        />
-
-        <textarea
-          placeholder="Votre message..."
-          value={newRec.message}
-          onChange={(e) => setNewRec({ ...newRec, message: e.target.value })}
-        />
-
-        <button className="send-btn" onClick={sendNewReclamation}>
-          <Send size={16} /> Envoyer
-        </button>
-      </div>
-
-      <hr />
-
-      {/* 📌 Liste des réclamations */}
-      {contacts.length === 0 && (
-        <p style={{ opacity: 0.6 }}>
-          Aucune réclamation pour le moment.
-        </p>
+    <div className="reclamation-container">
+      <h3>Réclamations</h3>
+     {role}  -  
+     {email}   -  
+     {userId
+     }
+      {/* Ajout de réclamation pour étudiants/professeurs */}
+      {(role === "student" || role === "professeur") && (
+        <div className="add-reclamation">
+          <input
+            type="text"
+            placeholder="Sujet"
+            value={newSujet}
+            onChange={(e) => setNewSujet(e.target.value)}
+          />
+          <textarea
+            placeholder="Message"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+          <button className="btn-send" onClick={handleAddReclamation}>
+            <Send size={16} /> Envoyer
+          </button>
+        </div>
       )}
 
-      {contacts.map((c) => (
-        <div key={c.id} className="contact-card">
-          <h4><MessageSquare size={16}/> {c.sujet}</h4>
-          <p><strong>Message :</strong> {c.message}</p>
-
-          <button
-            onClick={() => fetchReplies(c.id)}
-            disabled={loadingReplies[c.id]}
-          >
-            {loadingReplies[c.id] ? "Chargement..." : "Voir les réponses"}
-          </button>
-
-          <div className="responses">
-            {c.responses?.length > 0 ? (
-              c.responses.map((r) => (
-                <div key={r.id} className="response-card">
-                  <strong><Reply size={14}/> {r.replied_by} :</strong> {r.message}
-                  <small>
-                    {new Date(r.created_at).toLocaleString()}
-                  </small>
-                </div>
-              ))
-            ) : (
-              <small>Aucune réponse</small>
-            )}
-          </div>
-
-          <div className="reply-box">
-            <textarea
-              placeholder="Répondre..."
-              value={replyMsg[c.id] || ""}
-              onChange={(e) =>
-                setReplyMsg((prev) => ({ ...prev, [c.id]: e.target.value }))
-              }
-            />
-            <button onClick={() => sendReply(c.id)}>
-              <Send size={14}/> Répondre
-            </button>
-          </div>
-        </div>
-      ))}
+      {/* Liste des réclamations */}
+      {loading ? (
+        <p className="loading-text">Chargement des réclamations...</p>
+      ) : reclamations.length > 0 ? (
+        <ul className="reclamation-list">
+          {reclamations.map((r) => (
+            <li key={r.id} className="reclamation-item">
+              <div className="reclamation-header">
+                <strong>{r.name}</strong> - <span className="reclamation-sujet">{r.sujet}</span>
+                <span className="reclamation-date">{new Date(r.created_at).toLocaleString("fr-FR")}</span>
+              </div>
+              <p className="reclamation-message">{r.message}</p>
+              {/* Supprimer uniquement pour admin/directeur */}
+              {role !== "student" && role !== "professeur" && (
+                <button
+                  className="delete-btn"
+                  onClick={() => handleDeleteReclamation(r.id)}
+                  title="Supprimer"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="no-reclamation">Aucune réclamation pour le moment.</p>
+      )}
     </div>
   );
 }

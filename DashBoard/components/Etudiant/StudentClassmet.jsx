@@ -22,12 +22,6 @@ const getAvatar = (name) => {
 };
 
 const ClassMatesTable = () => {
-//   const [searchValue, setSearchValue] = useState("");
-//   const [page, setPage] = useState(1);
-//  const [students,setStudents] = useState([]);
-
- 
-//    const { user, loading } = useAuthuser();
 
 
 const [searchValue, setSearchValue] = useState("");

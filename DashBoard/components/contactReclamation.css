@@ -1,224 +1,119 @@
-.reclam-wrapper {
-  max-width: 900px;
-  margin: 30px auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 12px;
-  border: 1px solid #e4e4e4;
-  box-shadow: 0 4px 15px rgba(0,0,50,0.1);
+.reclamation-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fdfdfd;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-.reclam-wrapper h2 {
-  font-size: 24px;
-  color: #1e3a8a;
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.add-reclamation {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 25px;
 }
 
-.reclam-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.reclam-item {
-  background: #f8fafc;
-  border-radius: 10px;
-  padding: 18px;
-  border: 1px solid #e5e7eb;
-  transition: 0.2s ease;
-}
-
-.reclam-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-}
-
-.reclam-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.reclam-header h3 {
-  margin: 0;
-  color: #111827;
-}
-
-.date {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.message {
-  margin: 10px 0;
-  padding: 10px;
-  background: #eef2ff;
-  border-radius: 6px;
-  color: #1e3a8a;
-}
-
-.btn-reply {
-  margin-top: 10px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 8px 14px;
+.input-field, .textarea-field {
+  padding: 10px 15px;
   border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.btn-reply:hover {
-  background: #1d4ed8;
-}
-
-.reply-popover {
-  margin-top: 10px;
-  background: white;
-  border: 1px solid #cbd5e1;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-.reply-popover textarea {
+  border: 1px solid #ccc;
+  font-size: 14px;
   width: 100%;
-  height: 80px;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  resize: none;
+  transition: border-color 0.3s;
+}
+
+.input-field:focus, .textarea-field:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.textarea-field {
+  min-height: 80px;
+  resize: vertical;
 }
 
 .btn-send {
-  margin-top: 8px;
-  background: #059669;
+  align-self: flex-end;
+  background-color: #007bff;
   color: white;
-  padding: 7px 12px;
-  border-radius: 8px;
   border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  font-weight: 500;
+  transition: background 0.3s;
 }
 
 .btn-send:hover {
-  background: #047857;
+  background-color: #0056b3;
 }
 
-.reply-box {
-  margin-top: 12px;
-  background: #ecfdf5;
-  padding: 10px;
-  border-left: 5px solid #047857;
-  border-radius: 8px;
+.reclamation-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.no-data {
-  text-align: center;
-  color: #555;
-  margin-top: 20px;
-}
-
-.reclam-wrapper {
-  width: 90%;
-  max-width: 900px;
-  margin: 30px auto;
-}
-
-.reclam-card {
-  background: #fff;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
-  overflow: hidden;
-  transition: 0.2s;
-}
-
-.reclam-card:hover {
-  transform: scale(1.01);
-}
-
-.reclam-header {
+.reclamation-item {
+  background: #fafafa;
   padding: 15px;
-  cursor: pointer;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.reclamation-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-}
-
-.reclam-header .email {
-  font-size: 13px;
-  color: #666;
-}
-
-.rotate {
-  transform: rotate(180deg);
-  transition: 0.3s;
-}
-
-.reclam-body {
-  padding: 15px;
-  border-top: 1px solid #eee;
-}
-
-.message {
-  padding: 10px;
-  background: #f5f5f5;
-  border-radius: 6px;
-}
-
-.replies {
-  margin-top: 10px;
-}
-
-.reply-item {
-  background: #e9f3ff;
-  border-left: 3px solid #007bff;
-  padding: 10px;
   margin-bottom: 8px;
-  border-radius: 5px;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
-.reply-box {
-  display: flex;
-  margin-top: 15px;
-  gap: 10px;
+.reclamation-sujet {
+  font-style: italic;
+  color: #555;
 }
 
-.reply-box input {
-  flex: 1;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #aaa;
-}
-
-.reply-box button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 0 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.no-reply {
+.reclamation-date {
+  font-size: 12px;
   color: #999;
 }
-.no-data {
+
+.reclamation-message {
+  margin: 0;
+  color: #333;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #e74c3c;
+  transition: color 0.3s;
+}
+
+.delete-btn:hover {
+  color: #c0392b;
+}
+
+.loading-text, .error-text, .no-reclamation {
   text-align: center;
-  color: #555;
+  color: #666;
   margin-top: 20px;
 }
-.no-data {
-    text-align: center;
-    color: #555;
-    margin-top: 20px;
-    }
-    

@@ -13,10 +13,10 @@ import LineChart from "./components/LineChart";
 import Teachers from "./components/Teachers";
 import Courses from "./components/Courses";
 import StudentsClassmet from "./components/Etudiant/StudentClassmet";
-import Regions from "./components/regions";
-import Payments from "./components/Payments";
-import CustomerReviews from "./components/CustomerReviews";
-import NewestBooking from "./components/NewestBooking";
+import EmploidetempProf from "./components/prof/EmploidetempProf";
+
+// import CustomerReviews from "./components/CustomerReviews";
+// import NewestBooking from "./components/NewestBooking";
 import Saisie from "./components/Saisie";
 import ContactReclation from "./components/ContactReclation";
 import EmploideTempDir from "./components/EmploiDeTempDir";
@@ -37,7 +37,7 @@ const Dashboard = () => {
   const [teachers, setTeachers] = useState([]);
   const [students, setStudents] = useState(0);
   const [courses, setCourses] = useState([]);
-
+  const [number, setnumber] = useState(0);
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
   // Initialise role et activeItem une seule fois après que user soit chargé
@@ -64,7 +64,7 @@ const Dashboard = () => {
           etu: students.length,
           prof: teachers.length,
           cour:courses.length,
-        
+           
         });
      
     };
@@ -85,7 +85,7 @@ const Dashboard = () => {
     { id:"Cours", title: "Cours", value: stats.cour, color: "violet", icon: <BookOpen /> },
     {id:"Étudiants", title: "Étudiants", value: stats.etu, color: "blue", icon: <GraduationCap /> },
     {id:"Professeurs", title: "Professeurs", value: stats.prof, color: "green", icon: <Users /> },
-    {id:"Reclamation", title: "Notifications", value: stats.notif, color: "orange", icon: <BellDot /> },
+    {id:"Reclamation", title: "Notifications", value: number.length, color: "orange", icon: <BellDot /> },
   ];
 
   const chartData = [
@@ -165,10 +165,7 @@ const Dashboard = () => {
                 </div>
               </Analytics>
 
-              <div className="bottom-section">
-                <CustomerReviews />
-              </div>
-              <NewestBooking />
+             
             </>
           )}
 
@@ -180,11 +177,13 @@ const Dashboard = () => {
           {activeItem === "Info" && <Profileprof />}
           {activeItem === "Profile" && <Info />}
           { activeItem === "Emploi" && <EmploideTempDir/> }
-          {activeItem === "Saisie" && <Saisie role={role} />}
-          {activeItem === "Reclamation" && <ContactReclation />}
-          {activeItem === "Contact" && <Contact role={role} />}
-          {activeItem === "Paramètres" && <Parametre />}
-           {activeItem === "Emploie" && <Tempdemploi timetable={[]} />} {/* etudiant and prof  */}
+          {activeItem === "Saisie" && <Saisie role={role} userId={user.id} />}
+          {activeItem === "Reclamation" && <ContactReclation  role={role}  setnumber={setnumber} userId={user.id} />}
+          {activeItem === "Contact" && <ContactReclation role={role}  />}
+          {activeItem === "Paramètres" && <Parametre   userId={user.id}  role={role} />}
+          {activeItem === "Emploiee" && <Tempdemploi    userid={user.id}  />}
+
+           {activeItem === "Emploie" && <EmploidetempProf />} {/* etudiant and prof  */}
         </div>
       </div>
     </div>

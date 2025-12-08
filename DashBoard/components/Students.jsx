@@ -35,18 +35,13 @@ const INITIAL_GRADE = {
 const ITEMS_PER_PAGE = 5;
 
 const StudentPage = ({ setetu }) => {
-  const [popoverVisible, setPopoverVisible] = useState(null);
-
-  const togglePopover = (studentId) => {
-    setPopoverVisible((prev) => (prev === studentId ? null : studentId));
-  };
-
   const [students, setStudents] = useState([]);
   const [grades, setGrades] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [studentLoading, setStudentLoading] = useState(false);
+  const [gradeLoading, setGradeLoading] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const [showStudentModal, setShowStudentModal] = useState(false);
@@ -56,7 +51,12 @@ const StudentPage = ({ setetu }) => {
   const [showGradeModal, setShowGradeModal] = useState(false);
   const [currentGrade, setCurrentGrade] = useState(INITIAL_GRADE);
 
-  // ---------------- FETCH STUDENTS & GRADES ----------------
+  const [popoverVisible, setPopoverVisible] = useState(null);
+  const togglePopover = (studentId) => {
+    setPopoverVisible((prev) => (prev === studentId ? null : studentId));
+  };
+
+  // ---------------- FETCH DATA ----------------
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -85,7 +85,6 @@ const StudentPage = ({ setetu }) => {
     );
   }, [students, searchTerm]);
 
-  // Reset page to 1 when searchTerm changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
@@ -111,33 +110,103 @@ const StudentPage = ({ setetu }) => {
   };
 
   // ---------------- ADD / EDIT STUDENT ----------------
-  const handleStudentSubmit = async (e) => {
-    e.preventDefault();
-    if (!studentForm.Nom || !studentForm.Prenom || !studentForm.Email)
-      return alert("Fill all required fields!");
-    const payload = { ...studentForm };
+  
 
-    try {
-      if (editingStudent) {
-        const { data } = await Api.put(`/etudiants/${editingStudent.id}`, payload);
-        setStudents((prev) =>
-          prev.map((s) => (s.id === editingStudent.id ? data : s))
-        );
-      } else {
-        const { data } = await Api.post("/etudiants", payload);
-        setStudents((prev) => [...prev, data]);
-      }
-      setShowStudentModal(false);
-      setStudentForm(INITIAL_STUDENT);
-      setEditingStudent(null);
-    } catch (err) {
-      alert("Error saving student: " + err.message);
+  const handleStudentSubmit = async (e) => {
+  e.preventDefault();
+
+  // Vérification des champs obligatoires
+  if (!studentForm.Nom || !studentForm.Prenom || !studentForm.Email) {
+    return alert("Remplissez tous les champs obligatoires !");
+  }
+
+  if (isNaN(studentForm.GPA) || isNaN(studentForm.Attendance)) {
+    return alert("Les champs GPA et Attendance doivent être des nombres !");
+  }
+
+  // Vérification de l'unicité de l'email
+  if (!editingStudent) {
+    // Ajout
+    const emailExists = students.some(
+      (s) => s.Email.toLowerCase() === studentForm.Email.toLowerCase()
+    );
+    if (emailExists) {
+      return alert("Cet email est déjà utilisé par un autre étudiant !");
     }
+  } else {
+    // Modification
+    const emailExists = students.some(
+      (s) =>
+        s.Email.toLowerCase() === studentForm.Email.toLowerCase() &&
+        s.id !== editingStudent.id
+    );
+    if (emailExists) {
+      return alert("Cet email est déjà utilisé par un autre étudiant !");
+    }
+  }
+
+  // Préparer le payload
+  const payload = {
+    Nom: studentForm.Nom,
+    Prenom: studentForm.Prenom,
+    Email: studentForm.Email,
+    Class: studentForm.Class,
+    GPA: Number(studentForm.GPA),
+    Attendance: Number(studentForm.Attendance),
   };
+
+  console.table(payload); // Vérifier le payload dans la console
+
+  setStudentLoading(true);
+
+  try {
+    let responseData;
+
+    if (editingStudent) {
+      console.log("Mise à jour de l'étudiant ID :", editingStudent.id);
+      const res = await Api.put(`/etudiants/${editingStudent.id}`, payload);
+      responseData = res.data;
+      setStudents((prev) =>
+        prev.map((s) => (s.id === editingStudent.id ? responseData : s))
+      );
+      alert("Étudiant mis à jour avec succès !");
+    } else {
+      console.log("Ajout d'un nouvel étudiant");
+      const res = await Api.post("/etudiants", payload);
+      responseData = res.data;
+      setStudents((prev) => [...prev, responseData]);
+      alert("Étudiant ajouté avec succès !");
+    }
+
+    console.log("Réponse API :", responseData);
+
+    // Reset modal
+    setShowStudentModal(false);
+    setEditingStudent(null);
+    setStudentForm(INITIAL_STUDENT);
+
+  } catch (err) {
+    console.error("Erreur lors de la sauvegarde de l'étudiant :", err);
+
+    // Afficher message précis de l'API si disponible
+    if (err.response && err.response.data) {
+      console.error("Détails de l'erreur API :", err.response.data);
+      alert("Erreur API : " + JSON.stringify(err.response.data));
+    } else {
+      alert("Erreur : " + err.message);
+    }
+
+  } finally {
+    setStudentLoading(false);
+  }
+};
+
+
+
 
   const openEditStudent = (student) => {
     setEditingStudent(student);
-    setStudentForm(student);
+    setStudentForm({ ...student });
     setShowStudentModal(true);
   };
 
@@ -154,6 +223,10 @@ const StudentPage = ({ setetu }) => {
 
   const handleGradeSubmit = async (e) => {
     e.preventDefault();
+    if (!currentGrade.subject || !currentGrade.teacher || currentGrade.grade === "") {
+      return alert("Remplissez tous les champs du grade !");
+    }
+
     const payload = {
       student_id: currentGrade.student_id,
       subject: currentGrade.subject.trim(),
@@ -172,26 +245,26 @@ const StudentPage = ({ setetu }) => {
       return;
     }
 
+    setGradeLoading(true);
     try {
       if (currentGrade.id) {
         const { data } = await Api.put(`/grades/${currentGrade.id}`, payload);
         setGrades((prev) =>
           prev.map((g) => (g.id === currentGrade.id ? data : g))
         );
+        alert("Grade mis à jour avec succès !");
       } else {
         const { data } = await Api.post("/grades", payload);
         setGrades((prev) => [...prev, data]);
+        alert("Grade ajouté avec succès !");
       }
       setShowGradeModal(false);
       setCurrentGrade(INITIAL_GRADE);
     } catch (error) {
       console.error("Grade payload:", payload);
-      if (error.response) {
-        console.error("Server response:", error.response.data);
-        alert("Server error: " + JSON.stringify(error.response.data));
-      } else {
-        alert("Error saving grade: " + error.message);
-      }
+      alert("Erreur lors de la sauvegarde du grade.",error);
+    } finally {
+      setGradeLoading(false);
     }
   };
 
@@ -208,15 +281,13 @@ const StudentPage = ({ setetu }) => {
   // ---------------- STATS ----------------
   const avgGPA = useMemo(() => {
     return students.length
-      ? (students.reduce((a, s) => a + s.GPA, 0) / students.length).toFixed(1)
+      ? (students.reduce((a, s) => a + s.GPA, 0) / students.length).toFixed(2)
       : 0;
   }, [students]);
 
   const avgAttendance = useMemo(() => {
     return students.length
-      ? (students.reduce((a, s) => a + s.Attendance, 0) / students.length).toFixed(
-          0
-        )
+      ? (students.reduce((a, s) => a + s.Attendance, 0) / students.length).toFixed(0)
       : 0;
   }, [students]);
 
@@ -238,11 +309,7 @@ const StudentPage = ({ setetu }) => {
             <h1>Student Management</h1>
             <p>Manage student records, grades, and attendance</p>
           </div>
-
-          <button
-            className="btn-primary"
-            onClick={() => setShowStudentModal(true)}
-          >
+          <button className="btn-primary" onClick={() => setShowStudentModal(true)}>
             <Plus size={18} /> Add Student
           </button>
         </div>
@@ -256,7 +323,6 @@ const StudentPage = ({ setetu }) => {
               <p>Total Students</p>
             </div>
           </div>
-
           <div className="stat-card-etu green">
             <Trophy size={26} color="white" />
             <div>
@@ -264,7 +330,6 @@ const StudentPage = ({ setetu }) => {
               <p>Average GPA</p>
             </div>
           </div>
-
           <div className="stat-card-etu purple">
             <CalendarDays size={26} color="white" />
             <div>
@@ -272,7 +337,6 @@ const StudentPage = ({ setetu }) => {
               <p>Avg Attendance</p>
             </div>
           </div>
-
           <div className="stat-card-etu orange">
             <Star size={26} color="white" />
             <div>
@@ -309,7 +373,6 @@ const StudentPage = ({ setetu }) => {
                 <th>Grades</th>
               </tr>
             </thead>
-
             <tbody>
               {paginatedStudents.map((s) => (
                 <tr key={s.id}>
@@ -318,11 +381,7 @@ const StudentPage = ({ setetu }) => {
                   <td>{s.Email}</td>
                   <td>{s.Class}</td>
                   <td><span className="badge green">{s.GPA}</span></td>
-                  <td>
-                    <span className={`badge ${s.Attendance >= 90 ? "green" : "yellow"}`}>
-                      {s.Attendance}%
-                    </span>
-                  </td>
+                  <td><span className={`badge ${s.Attendance >= 90 ? "green" : "yellow"}`}>{s.Attendance}%</span></td>
                   <td className="actions">
                     <button className="icon-btn edit" onClick={() => openEditStudent(s)}>
                       <Pencil size={16} />
@@ -330,8 +389,8 @@ const StudentPage = ({ setetu }) => {
                     <button className="icon-btn delete" onClick={() => handleDeleteStudent(s.id)}>
                       <Trash2 size={16} />
                     </button>
-
-                    {/* Grades Popover */}
+                  </td>
+                  <td>
                     <div className="grade-popover-wrapper">
                       <button className="icon-btn grade" onClick={() => togglePopover(s.id)}>
                         <Star size={16} /> Grades
@@ -390,7 +449,6 @@ const StudentPage = ({ setetu }) => {
               Next
             </button>
           </div>
-
         </div>
 
         {/* STUDENT MODAL */}
@@ -404,19 +462,21 @@ const StudentPage = ({ setetu }) => {
                 </button>
               </div>
               <form className="modal-form" onSubmit={handleStudentSubmit}>
-                <input type="text" name="Nom" placeholder="First Name" value={studentForm.Nom}
-                  onChange={(e) => setStudentForm({ ...studentForm, Nom: e.target.value })} required />
-                <input type="text" name="Prenom" placeholder="Last Name" value={studentForm.Prenom}
-                  onChange={(e) => setStudentForm({ ...studentForm, Prenom: e.target.value })} required />
-                <input type="email" name="Email" placeholder="Email" value={studentForm.Email}
-                  onChange={(e) => setStudentForm({ ...studentForm, Email: e.target.value })} required />
-                <input type="text" name="Class" placeholder="Class" value={studentForm.Class}
+                <input type="text" placeholder="First Name" value={studentForm.Nom} required
+                  onChange={(e) => setStudentForm({ ...studentForm, Nom: e.target.value })} />
+                <input type="text" placeholder="Last Name" value={studentForm.Prenom} required
+                  onChange={(e) => setStudentForm({ ...studentForm, Prenom: e.target.value })} />
+                <input type="email" placeholder="Email" value={studentForm.Email} required
+                  onChange={(e) => setStudentForm({ ...studentForm, Email: e.target.value })} />
+                <input type="text" placeholder="Class" value={studentForm.Class}
                   onChange={(e) => setStudentForm({ ...studentForm, Class: e.target.value })} />
-                <input type="number" step="1.01" name="GPA" placeholder="GPA" value={studentForm.GPA}
+                <input type="number" step="0.01" placeholder="GPA" value={studentForm.GPA}
                   onChange={(e) => setStudentForm({ ...studentForm, GPA: e.target.value })} />
-                <input type="number" name="Attendance" placeholder="Attendance (%)" value={studentForm.Attendance}
+                <input type="number" placeholder="Attendance (%)" value={studentForm.Attendance}
                   onChange={(e) => setStudentForm({ ...studentForm, Attendance: e.target.value })} />
-                <button type="submit" className="btn-primary full">{editingStudent ? "Update Student" : "Add Student"}</button>
+                <button type="submit" className="btn-primary full" disabled={studentLoading}>
+                  {studentLoading ? "Saving..." : editingStudent ? "Update Student" : "Add Student"}
+                </button>
               </form>
             </div>
           </div>
@@ -433,18 +493,19 @@ const StudentPage = ({ setetu }) => {
                 </button>
               </div>
               <form className="modal-form" onSubmit={handleGradeSubmit}>
-                <input type="text" placeholder="Subject" value={currentGrade.subject}
-                  onChange={(e) => setCurrentGrade({ ...currentGrade, subject: e.target.value })} required />
-                <input type="text" placeholder="Teacher" value={currentGrade.teacher}
-                  onChange={(e) => setCurrentGrade({ ...currentGrade, teacher: e.target.value })} required />
-                <input type="number" placeholder="Grade" value={currentGrade.grade}
-                  onChange={(e) => setCurrentGrade({ ...currentGrade, grade: e.target.value })} required />
-                <button type="submit" className="btn-primary full">{currentGrade.id ? "Update Grade" : "Save Grade"}</button>
+                <input type="text" placeholder="Subject" value={currentGrade.subject} required
+                  onChange={(e) => setCurrentGrade({ ...currentGrade, subject: e.target.value })} />
+                <input type="text" placeholder="Teacher" value={currentGrade.teacher} required
+                  onChange={(e) => setCurrentGrade({ ...currentGrade, teacher: e.target.value })} />
+                <input type="number" placeholder="Grade" value={currentGrade.grade} required
+                  onChange={(e) => setCurrentGrade({ ...currentGrade, grade: e.target.value })} />
+                <button type="submit" className="btn-primary full" disabled={gradeLoading}>
+                  {gradeLoading ? "Saving..." : currentGrade.id ? "Update Grade" : "Save Grade"}
+                </button>
               </form>
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

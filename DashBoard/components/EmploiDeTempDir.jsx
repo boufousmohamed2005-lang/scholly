@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { X, Plus } from "lucide-react";
-import api from "../../src/Api"; // Ton instance axios
+import React, { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
+import api from "../../src/Api";
 import "./emploideTemps.css";
 
-const EmploideTempDir = () => {
+export default function EmploideTempDir() {
   const [formData, setFormData] = useState({
     jour: "",
     heure_debut: "",
@@ -13,27 +13,54 @@ const EmploideTempDir = () => {
     matiere: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [classes, setClasses] = useState([]);
+  const [teachers,setteachers] = useState([]);
+  const [subjects,setSubjects] = useState([]);
 
+  // -----------------------------
+  // Charger la liste des classes
+  // -----------------------------
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const res = await api.get("/etudiants");
+        const rest = await api.get("/professeurs");
+        setClasses(res.data);
+        setteachers(rest.data);
+        setSubjects(rest.data)
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+        setErrorMsg("Impossible de charger les classes !");
+      }
+    };
+
+    fetchClasses();
+  }, []);
+
+  // ----------------------------
+  // Submit Formulaire
+  // ----------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { jour, heure_debut, heure_fin, class: classe, professeur, matiere } = formData;
-
-    if (!jour || !heure_debut || !heure_fin || !classe || !professeur || !matiere) {
+    if (Object.values(formData).some((v) => v === "")) {
       setErrorMsg("Veuillez remplir tous les champs !");
       return;
     }
 
-    setLoading(true);
+    setLoading(false);
     setErrorMsg("");
     setSuccessMsg("");
 
     try {
       await api.post("/emplois", formData);
-      setSuccessMsg("Matière ajoutée avec succès !");
+
+      setSuccessMsg("Cours ajouté avec succès !");
       setFormData({
         jour: "",
         heure_debut: "",
@@ -42,6 +69,7 @@ const EmploideTempDir = () => {
         professeur: "",
         matiere: "",
       });
+      setLoading(false);
     } catch (err) {
       console.error(err);
       setErrorMsg("Erreur lors de l'ajout, vérifiez les données !");
@@ -50,12 +78,28 @@ const EmploideTempDir = () => {
     }
   };
 
+   if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="loader-dot"></div>
+        <div className="loader-dot"></div>
+        <div className="loader-dot"></div>
+      </div>
+    );
+  }
+
+  // ----------------------------
+  // Rendu UI
+  // ----------------------------
+
   return (
     <div className="saisie-wrapper">
       <h2>Saisie Emploi du Temps</h2>
       <p>Seul le directeur peut saisir les cours et horaires</p>
 
       <form className="saisie-form" onSubmit={handleSubmit}>
+
+        {/* ------------------ JOURS ------------------ */}
         <label>
           Jour :
           <select
@@ -64,83 +108,124 @@ const EmploideTempDir = () => {
             required
           >
             <option value="">-- Sélectionner --</option>
-            <option value="Lundi">Lundi</option>
-            <option value="Mardi">Mardi</option>
-            <option value="Mercredi">Mercredi</option>
-            <option value="Jeudi">Jeudi</option>
-            <option value="Vendredi">Vendredi</option>
-            <option value="Samedi">Samedi</option>
+            {["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"].map(
+              (day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              )
+            )}
           </select>
         </label>
 
+        {/* ------------------ HEURE DEBUT ------------------ */}
         <label>
           Heure début :
           <input
             type="time"
             value={formData.heure_debut}
-            onChange={(e) => setFormData({ ...formData, heure_debut: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, heure_debut: e.target.value })
+            }
             required
           />
         </label>
 
+        {/* ------------------ HEURE FIN ------------------ */}
         <label>
           Heure fin :
           <input
             type="time"
             value={formData.heure_fin}
-            onChange={(e) => setFormData({ ...formData, heure_fin: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, heure_fin: e.target.value })
+            }
             required
           />
         </label>
 
-        {/* ---- SELECT CLASSE (AS1 / AS2 / AS3) ---- */}
+        {/* ------------------ CLASSE ------------------ */}
         <label>
           Classe :
           <select
             value={formData.class}
-            onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, class: e.target.value })
+            }
             required
           >
             <option value="">-- Sélectionner --</option>
-            <option value="AS1">AS1</option>
-            <option value="AS2">AS2</option>
-            <option value="AS3">AS3</option>
+
+            {classes.map((c) => (
+              <option key={c.id} value={c.Class}>
+                {c.Class}
+              </option>
+            ))}
           </select>
         </label>
 
+        {/* ------------------ PROFESSEUR ------------------ */}
         <label>
           Professeur :
-          <input
-            type="text"
-            placeholder="Nom du professeur"
-            value={formData.professeur}
-            onChange={(e) => setFormData({ ...formData, professeur: e.target.value })}
+         
+           <select
+              value={formData.professeur}
+            onChange={(e) =>
+              setFormData({ ...formData, professeur: e.target.value })
+            }
             required
-          />
+          >
+            <option value="">-- Sélectionner --</option>
+
+            {teachers.map((c) => (
+              <option key={c.id} value={c.Name}>
+                {c.Name}
+              </option>
+            ))}
+          </select>
         </label>
 
+        {/* ------------------ MATIÈRE ------------------ */}
         <label>
           Matière :
-          <input
+          {/* <input
             type="text"
             placeholder="Nom de la matière"
             value={formData.matiere}
-            onChange={(e) => setFormData({ ...formData, matiere: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, matiere: e.target.value })
+            }
             required
-          />
+          /> */}
+           <select
+              value={formData.matiere}
+            onChange={(e) =>
+              setFormData({ ...formData, matiere: e.target.value })
+            }
+            required
+          >
+            <option value="">-- Sélectionner --</option>
+
+            {subjects.map((c) => (
+              <option key={c.id} value={c.Subject}>
+                {c.Subject}
+              </option>
+            ))}
+          </select>
         </label>
 
+        {/* ------------------ BOUTON ------------------ */}
         <div className="form-actions">
           <button type="submit" className="btn-primary" disabled={loading}>
-            <Plus size={16} /> {loading ? "Ajout en cours..." : "Ajouter"}
+            <Plus size={16} />
+            {loading ? "Ajout..." : "Ajouter"}
           </button>
         </div>
 
-        {successMsg && <p className="success">{successMsg}</p>}
+        {/* Messages */}
+        {successMsg && <p className="success"  style={{color:'green'}} >{successMsg}</p>}
         {errorMsg && <p className="error">{errorMsg}</p>}
       </form>
     </div>
   );
-};
-
-export default EmploideTempDir;
+}

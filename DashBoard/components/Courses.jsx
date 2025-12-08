@@ -127,7 +127,7 @@ setcour(subjects)
   const totalCourses = subjects.length;
   const totalEnrollment = subjects.length * 10; // Exemple simple
   const avgCapacity = subjects.length ? Math.floor((totalEnrollment / (subjects.length * 10)) * 100) : 0;
-  const fullCourses = subjects.length ? 1 : 0; // Exemple simple
+
 if (loading) {
   return <div className="loader-container">
           <div className="loader-dot"></div>
@@ -174,13 +174,7 @@ if (loading) {
             <div className="progress-fill progress-warning" style={{ width:`${avgCapacity}% `}}></div>
           </div>
         </div>
-        <div className="card-stats">
-          <h3>Full Courses</h3>
-          <p>{fullCourses}</p>
-          <div className="progress-bar">
-            <div className="progress-fill progress-danger" style={{ width: "10%" }}></div>
-          </div>
-        </div>
+       
       </div>
 
       {/* Table */}

@@ -14,7 +14,7 @@ export default function Login() {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
 
@@ -26,28 +26,26 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // Appel API login
       const res = await api.post("/login", {
         email: formData.email,
         password: formData.password,
       });
 
-      // Stocker token dans sessionStorage
-      sessionStorage.setItem("token", res.data.access_token);
-
-      // Mettre token dans axios par défaut
+      sessionStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("role", res.data.user?.role);
       api.defaults.headers.common["Authorization"] = `Bearer ${res.data.access_token}`;
-
-      // Mettre l'utilisateur dans le hook global
       setUser(res.data.user);
 
-      // Stocker le rôle choisi (optionnel)
-      sessionStorage.setItem("userRole", userRole);
+      if (userRole !== res.data.user?.role) {
+        alert("Rôle incorrect");
+        return;
+      }
 
       setMessage({ type: "success", text: "Connexion réussie !" });
 
-      // Redirection vers le dashboard
-      navigate("/dashboard");
+      setInterval(() => {
+        navigate("/dashboard");
+      }, 1900);
     } catch (err) {
       console.error(err);
       setMessage({ type: "error", text: "Identifiants invalides" });
@@ -107,7 +105,7 @@ export default function Login() {
               <div className="form-group">
                 <div className="password-label">
                   <label htmlFor="password">Mot de passe</label>
-                  <a href="#" className="forgot-link">Mot de passe oublié ?</a>
+                  
                 </div>
                 <input
                   id="password"
